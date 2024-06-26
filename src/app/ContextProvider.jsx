@@ -1,62 +1,21 @@
 import NavigationContainer from "./NavigationContainer"
-import { useState, useEffect, createContext } from "react"
+import { useState, useEffect, createContext, useRef } from "react"
 
+import io  from "socket.io-client"
+
+const serverUrl = "https://webcamserver.onrender.com"
+//const serverUrl ="http://localhost:3000"
+const socket = io(serverUrl)
 
 
 export const Context = createContext()
 
 
-const testDevices = [
-  { 
-    status : "sending",
-    network : "",
-    deviceName : "device1",
-    socketId : "",
-    peerId : "",
-    roomName : "",
-    cameraCount : 0,
-  },
-  { 
-    status : "sending",
-    network : "",
-    deviceName : "device2",
-    socketId : "",
-    peerId : "",
-    roomName : "",
-    cameraCount : 0, 
-  },
-  { 
-    status : "receiving",
-    network : "",
-    deviceName : "device3",
-    socketId : "",
-    peerId : "",
-    roomName : "",
-    cameraCount : 0,
-  },
-  { 
-    status : "receiving",
-    network : "",
-    deviceName : "device4",
-    socketId : "",
-    peerId : "",
-    roomName : "",
-    cameraCount : 0,
-  },
-  { 
-    status : "",
-    network : "",
-    deviceName : "device5",
-    socketId : "",
-    peerId : "",
-    roomName : "",
-    cameraCount : 0,
-  },
-  ]
+
 
 export default function App () {
   //devices in the same room 
-  const [ allDevices, setAllDevices ] = useState(testDevices)
+  const [ allDevices, setAllDevices ] = useState([])
   const [ deviceInfo, setDeviceInfo ] = useState({
     status : "",
     network : "",
@@ -66,14 +25,46 @@ export default function App () {
     roomName : "",
     cameraCount : 0,
   })
-  const [ itemsInDB, setItemsInDB ] = useState([1,2,3,4,5,6,7])
   
+  const cameraChildRef = useRef(null)
   
-  //
   useEffect(()=>{
+    
     getDeviceInfo()
     checkCameras()
+    
+    socket.on("connect", () => {
+      setDeviceInfo(prevv => {
+        return {...prevv , socketId : socket.id }
+      })
+      
+      if(deviceInfo.deviceName !== "" && deviceInfo.roomName !== "" && deviceInfo.socketId !== ""){
+        socket.emit("sendDeviceInfoToServer", deviceInfo)
+      }
+    })
+    
+    socket.on("sendAllDevicesToClient", (devices) => {
+      setAllDevices(devices)
+    })
+    
+    socket.on("takePhoto", ()=>{
+      cameraChildRef.current?.capture()
+    })
+    
+    socket.on("startRecording", () => {
+      cameraChildRef.current?.record()
+    })
+    
+    
   },[])
+  
+  useEffect(()=>{
+      if(deviceInfo.deviceName !== "" && deviceInfo.roomName !== "" && deviceInfo.socketId !== ""){
+        socket.emit("sendDeviceInfoToServer", deviceInfo)
+      }
+  },[deviceInfo])
+  
+  
   
   const getDeviceInfo = () => {
     const obj = localStorage.getItem("deviceInfo")
@@ -115,8 +106,8 @@ export default function App () {
       setAllDevices,
       deviceInfo,
       setDeviceInfo,
-      itemsInDB,
-      setItemsInDB,
+      socket,
+      cameraChildRef,
       
     }}>
       <NavigationContainer />

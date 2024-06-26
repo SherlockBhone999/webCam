@@ -22,7 +22,7 @@ const pageTransition = {
 
 
 const Container = () => {
-  const { deviceInfo } = useContext(Context)
+  const { deviceInfo, setDeviceInfo } = useContext(Context)
   const navigate = useNavigate()
 
   return (
@@ -36,20 +36,33 @@ const Container = () => {
         className="w-full h-full"
       >
         <div className="w-full h-full flex flex-col justify-between ">
-          <div className=" p-1 flex justify-center ">
-            <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
-              onClick={()=>navigate("/sender")}
-            >
-              <p>send</p>
-            </button>
-              
-            <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
-              onClick={()=>navigate("/receiver")}
-            >
-              <p>receive</p>
-            </button>
-          </div>
-            
+          { deviceInfo?.socketId ?
+            <div className=" p-1 flex justify-center ">
+              <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
+                onClick={()=>{
+                  setDeviceInfo(prevv => {
+                    return { ...prevv, status : "sending"}
+                  })
+                  navigate("/sender")
+                }}
+              >
+                <p>send</p>
+              </button>
+                
+              <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
+                onClick={()=>{
+                  setDeviceInfo(prevv => {
+                    return {...prevv, status : "receiving"}
+                  })
+                  navigate("/receiver")
+                }}
+              >
+                <p >receive</p>
+              </button>
+            </div>
+          :
+          <p className="p-1">cannot connect to server</p>
+          }
           <div className="flex-auto">
             <Devices />
           </div>

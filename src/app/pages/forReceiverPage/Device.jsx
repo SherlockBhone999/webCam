@@ -35,6 +35,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
         <div className="h-60" />
         <div className="absolute top-0 w-full flex justify-between">
           <div>
+            
             <p>{data.deviceName}</p>
           </div>
           <div>
@@ -60,6 +61,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
             <button> capture</button>
             <button> record</button>
           </div>
+          <p>should be invisible if no peer stream sent </p>
         </div>
       </div>
       

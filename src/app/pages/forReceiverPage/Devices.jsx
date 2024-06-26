@@ -25,7 +25,7 @@ export default function Devices(){
   useEffect(()=>{
     const arr = []
     allDevices.map(obj => {
-      if(obj.status === "sending"){
+      if(obj.status === "sending" ){
         arr.push(obj)
       }
     })

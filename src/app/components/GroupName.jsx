@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react"
 import { Context } from "../ContextProvider"
 
 export default function App () {
-  const { deviceInfo, itemsInDB } = useContext(Context)
+  const { deviceInfo} = useContext(Context)
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -48,7 +48,7 @@ export default function App () {
           <button className="m-1 p-1 bg-blue-100"
             onClick={()=>navigate("/setting")}
           >
-            <p>dB ( {itemsInDB.length} )</p>
+            <p>setting</p>
           </button>
           
       </div>
