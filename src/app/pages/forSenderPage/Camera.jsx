@@ -164,11 +164,23 @@ const Camera = () => {
       { !isFailed && (
         <div>
         
-        <video ref={videoRef} autoPlay muted style={{ width: '5%' }} className=""></video>
+        <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className=""></video>
         
         {/* i don't know why but this hs needed, probably to use canvas.getContext */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         
+        <button onClick={startRecording}
+          className="bg-blue-400 p-1 m-1 rounded"
+        >start</button>
+        <button onClick={stopRecording}
+          className="bg-blue-400 p-1 m-1 rounded"
+        >stop</button>
+        <button onClick={turnCamera}
+          className="bg-blue-400 p-1 m-1 rounded"
+        >turn</button>
+        <button onClick={capturePhoto}
+          className="bg-blue-400 p-1 m-1 rounded"
+        >capture</button>
         </div>
       )}
       

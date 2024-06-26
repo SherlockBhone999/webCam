@@ -51,6 +51,7 @@ function App () {
               <div className="flex-auto bg-yellow-50 overflow-scroll ml-1 mr-1">
                 <Devices />
               </div>
+              
             </div>
           </div>
           
@@ -69,7 +70,6 @@ export default function App2 (){
       <div className="flex-auto">
         <App />
       </div>
-      
 
     </div>
   )
