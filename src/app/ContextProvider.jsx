@@ -1,5 +1,5 @@
 import NavigationContainer from "./NavigationContainer"
-import { useState, useEffect, createContext, useRef } from "react"
+import { useState, useEffect, createContext } from "react"
 
 import io  from "socket.io-client"
 
@@ -26,7 +26,6 @@ export default function App () {
     cameraCount : 0,
   })
   
-  const cameraChildRef = useRef(null)
   
   useEffect(()=>{
     
@@ -46,15 +45,6 @@ export default function App () {
     socket.on("sendAllDevicesToClient", (devices) => {
       setAllDevices(devices)
     })
-    
-    socket.on("takePhoto", ()=>{
-      cameraChildRef.current?.capture()
-    })
-    
-    socket.on("startRecording", () => {
-      cameraChildRef.current?.record()
-    })
-    
     
   },[])
   
@@ -107,7 +97,7 @@ export default function App () {
       deviceInfo,
       setDeviceInfo,
       socket,
-      cameraChildRef,
+
       
     }}>
       <NavigationContainer />

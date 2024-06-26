@@ -14,12 +14,31 @@ const Camera = () => {
   const canvasRef = useRef(null);
   const [ facingMode, setFacingMode ] = useState("user")
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blobUrl : "" })
-
+  const { socket } = useContext(Context)
   
   const { saveToFileDB, error } = useIndexedDB();
  
   useEffect(()=>{
     setupCamera();
+    
+    socket.on("capturePhoto", (twoDevices)=>{
+      capturePhoto()
+      socket.emit("feedbackPhotoSaved", twoDevices )
+    })
+    
+    socket.on("startRecording" , () => {
+      startRecording()
+    })
+    
+    socket.on("stopRecording" , (twoDevices) => {
+      stopRecording()
+      socket.emit("feedbackVideoSaved", twoDevices )
+    })
+    
+    socket.on("turnCamera" , () => {
+      turnCamera()
+    })
+    
   },[])
   
   useEffect(() => {
@@ -83,7 +102,7 @@ const Camera = () => {
 
   
   const startRecording = () => {
-      setIsRecording(true)
+    setIsRecording(true)
     if (!videoRef.current) return;
     const stream = videoRef.current.srcObject
     

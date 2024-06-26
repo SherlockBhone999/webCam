@@ -61,7 +61,7 @@ const Container = () => {
               </button>
             </div>
           :
-          <p className="p-1">cannot connect to server</p>
+          <p className="p-1">cannot connect to server. Please wait 50seconds or more.</p>
           }
           <div className="flex-auto">
             <Devices />

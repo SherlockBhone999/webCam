@@ -1,11 +1,27 @@
 
 import { ReactTyped } from "react-typed"
-import { useState, useEffect } from "react"
-
+import { useState, useEffect, useContext, useRef } from "react"
+import { Context } from "../../ContextProvider"
 
 
 export default function App () {
   const [notiArr, setNotiArr] = useState([""])
+  const typedRef = useRef(null)
+  const { socket } = useContext(Context)
+  
+  useEffect(()=>{
+    socket.on("displayFeedback", message => {
+      const arr = [message, ""]
+      setNotiArr(arr)
+    })
+    
+  },[])
+  
+  const handleComplete = () => {
+    setNotiArr([])
+  }
+  
+  
   return (
   <div className="">
     <div className="w-11/12 bg-blue-200 p-2 rounded-full relative"
@@ -19,13 +35,15 @@ export default function App () {
           backSpeed={10}
           showCursor={false}
           //loop
-          
+          onComplete={handleComplete}
         />          
       <p>_</p>
       </div>
       <div className="absolute top-0 right-0 w-1/12 h-full bg-blue-400" />
       <button onClick={()=>{
+    
         setNotiArr(["Tablet saved a photo",""])
+      
       }}>click</button>
     </div>
   </div>

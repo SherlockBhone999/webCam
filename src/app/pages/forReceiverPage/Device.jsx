@@ -1,8 +1,10 @@
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
+import { Context } from "../../ContextProvider"
 
 export default function Device ({data,index, sendingDevices, setSendingDevices}) {
-  const [isAccepted, setIsAccepted ] = useState(false)
+  const { socket, deviceInfo } = useContext(Context)
+  const [ isRecording, setIsRecording ] = useState(false)
   
   const updateList = () => {
     
@@ -25,8 +27,48 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
       arr.push(data)
       setSendingDevices(arr)
     },500)
-    
 
+  }
+  
+  
+  const orderCapturePhoto = () => {
+    const twoDevices = {
+      sender : {
+        deviceName : data.deviceName,
+        socketId : data.socketId
+        },
+      receiver : {
+        socketId : deviceInfo.socketId
+      }
+    }    
+    socket.emit("orderCapturePhoto", twoDevices )
+  }
+  
+  const orderStartRecording = () => {
+    setIsRecording(true)
+    socket.emit("orderStartRecording", data.socketId )
+  }
+  
+  const orderStopRecording = () => {
+    setIsRecording(false)
+    const twoDevices = {
+      sender : {
+        deviceName : data.deviceName,
+        socketId : data.socketId
+        },
+      receiver : {
+        socketId : deviceInfo.socketId
+      }
+    }    
+    socket.emit("orderStopRecording", twoDevices )
+  }
+  
+  const orderTurnCamera = () => {
+    socket.emit("orderTurnCamera",data.socketId)
+  }
+  
+  const closeConnection = () => {
+    
   }
   
   return (
@@ -48,7 +90,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
             </button>
             }
             <button className="bg-red-600 p-2 rounded"
-              onClick={()=>setIsAccepted(false)}
+              onClick={closeConnection}
             >
               close
             </button>
@@ -56,10 +98,23 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
         </div>
         
         <div className="absolute bottom-0 left-0 w-full">
-          <div className="flex justify-between bg-blue-200 mr-2 ml-2">
-            <button> turn</button>
-            <button> capture</button>
-            <button> record</button>
+          <div className="flex justify-between mr-2 ml-2">
+            { !isRecording &&
+              <button className="bg-blue-400 p-1 rounded shadow"> turn</button>
+            }
+            <button className="bg-blue-400 p-1 rounded shadow"
+              onClick={orderCapturePhoto}
+            > capture</button>
+            
+            { !isRecording ?
+              <button className="bg-blue-400 p-1 rounded shadow"
+                onClick={orderStartRecording}
+              > record</button>
+            :
+              <button className="bg-blue-400 p-1 rounded shadow"
+                onClick={orderStopRecording}
+              > stop</button>
+            }
           </div>
           <p>should be invisible if no peer stream sent </p>
         </div>

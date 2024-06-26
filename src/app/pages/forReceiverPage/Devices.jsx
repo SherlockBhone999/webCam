@@ -18,7 +18,7 @@ const pageTransition = {
 
 
 export default function Devices(){
-  const { allDevices } = useContext(Context)
+  const { allDevices ,  /*for test*/deviceInfo } = useContext(Context)
   const [ sendingDevices, setSendingDevices ] = useState([])
   const [ isActive, setIsActive] = useState(true)
   
@@ -61,6 +61,12 @@ export default function Devices(){
               setSendingDevices={setSendingDevices}
             />
           )}
+            <Device
+              data={deviceInfo}
+              index={0}
+              sendingDevices={sendingDevices}
+              setSendingDevices={setSendingDevices}
+            />
         </motion.div>
       }
     </AnimatePresence>
