@@ -67,8 +67,8 @@ const Camera = () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { 
             facingMode : facingMode , 
-            width: { ideal: 1920 }, //4096 //1920
-            height: { ideal: 1080 } //2160 //1080
+            //width: { ideal: 1920 }, //4096 //1920
+            //height: { ideal: 1080 } //2160 //1080
         } , audio : true });
         
         
