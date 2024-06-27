@@ -4,9 +4,10 @@ import Devices from "./Devices"
 import NotiBox from "./NotiBox"
 
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
+import { Context } from "../../ContextProvider"
 
 
 const pageVariants2 = {
@@ -63,13 +64,28 @@ function App () {
 }
 
 export default function App2 (){
+  const { setDeviceInfo , deviceInfo } = useContext(Context)
+  const location = useLocation()
+  
+  useEffect(()=>{
+    if(location.pathname.includes("receiver")){
+      setDeviceInfo(prevv => {
+        return {
+          ...prevv,
+          status : "receiving"
+        }
+      })
+    }
+  },[location])
   
   return (
     <div className="w-screen h-screen flex flex-col">
       <GroupName />
+      <p>{JSON.stringify(deviceInfo)}</p>
       <div className="flex-auto">
         <App />
       </div>
+
 
     </div>
   )

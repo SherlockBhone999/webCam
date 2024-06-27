@@ -3,9 +3,9 @@ import Devices from "./Devices"
 import GroupName from '../../components/GroupName'
 
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
-import { useContext } from "react"
+import { useContext , useEffect } from "react"
 import { Context } from "../../ContextProvider"
 
 const pageVariants = {
@@ -40,9 +40,6 @@ const Container = () => {
             <div className=" p-1 flex justify-center ">
               <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
                 onClick={()=>{
-                  setDeviceInfo(prevv => {
-                    return { ...prevv, status : "sending"}
-                  })
                   navigate("/sender")
                 }}
               >
@@ -51,9 +48,6 @@ const Container = () => {
                 
               <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
                 onClick={()=>{
-                  setDeviceInfo(prevv => {
-                    return {...prevv, status : "receiving"}
-                  })
                   navigate("/receiver")
                 }}
               >
@@ -77,7 +71,19 @@ const Container = () => {
 
 
 export default function App () {
-
+  const location = useLocation()
+  const { setDeviceInfo } = useContext(Context)
+  
+  useEffect(()=>{
+    if(location.pathname === "/"){
+      setDeviceInfo(prevv => {
+        return {
+          ...prevv,
+          status : ""
+        }
+      })
+    }
+  },[location])
   return (
     <div className="w-screen h-screen bg-gray-200 flex flex-col">
       <GroupName /> 

@@ -1,8 +1,10 @@
 import GroupName from "../../components/GroupName"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useContext } from "react"
 import { ReactTyped } from "react-typed"
 import Devices from "./Devices"
+import { Context } from "../../ContextProvider"
 import Camera from "./Camera"
 
 
@@ -69,6 +71,20 @@ function App () {
 }
 
 export default function App2 (){
+  const { setDeviceInfo } = useContext(Context)
+  const location = useLocation()
+  
+  useEffect(()=>{
+    if(location.pathname.includes("sender")){
+      setDeviceInfo(prevv => {
+        return {
+          ...prevv,
+          status : "sending"
+        }
+      })
+    }
+  },[location])
+  
   return (
     <div className="w-screen h-screen flex flex-col">
       <GroupName />

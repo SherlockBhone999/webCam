@@ -1,7 +1,7 @@
 import Device from "./Device"
 
 import { Context } from '../../ContextProvider'
-import { useContext, useState, useEffect } from "react"
+import { useContext, useState, useEffect , useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 
 const pageVariants = {
@@ -18,11 +18,14 @@ const pageTransition = {
 
 
 export default function Devices(){
-  const { allDevices ,  /*for test*/deviceInfo } = useContext(Context)
+  const { allDevices } = useContext(Context)
   const [ sendingDevices, setSendingDevices ] = useState([])
   const [ isActive, setIsActive] = useState(true)
+  const [doAnimation, setDoAnimation] = useState(true)
   
   useEffect(()=>{
+    
+    
     const arr = []
     allDevices.map(obj => {
       if(obj.status === "sending" ){
@@ -30,15 +33,20 @@ export default function Devices(){
       }
     })
     setSendingDevices(arr)
+    
   },[allDevices])
   
-  useEffect(()=>{
-    setIsActive(false)
-    setTimeout(()=>{
-      setIsActive(true)
-    },500)
-  },[sendingDevices])
   
+
+  useEffect(()=>{
+    if(doAnimation){
+      setIsActive(false)
+      setTimeout(()=>{
+        setIsActive(true)
+      },500)
+    }
+  },[sendingDevices, doAnimation])
+    
   
   return (
     <AnimatePresence>
@@ -59,14 +67,10 @@ export default function Devices(){
               index={index}
               sendingDevices={sendingDevices}
               setSendingDevices={setSendingDevices}
+              setDoAnimation={setDoAnimation}
             />
           )}
-            <Device
-              data={deviceInfo}
-              index={0}
-              sendingDevices={sendingDevices}
-              setSendingDevices={setSendingDevices}
-            />
+
         </motion.div>
       }
     </AnimatePresence>

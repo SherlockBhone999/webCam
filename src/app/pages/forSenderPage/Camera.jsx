@@ -14,7 +14,8 @@ const Camera = () => {
   const canvasRef = useRef(null);
   const [ facingMode, setFacingMode ] = useState("user")
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blobUrl : "" })
-  const { socket } = useContext(Context)
+  const { socket, setDeviceInfo } = useContext(Context)
+
   
   const { saveToFileDB, error } = useIndexedDB();
  
@@ -31,12 +32,13 @@ const Camera = () => {
     })
     
     socket.on("stopRecording" , (twoDevices) => {
-      stopRecording()
+      const senderCameraStates = twoDevices.sender.cameraComponentStates
+      stopRecording(senderCameraStates)
       socket.emit("feedbackVideoSaved", twoDevices )
     })
     
-    socket.on("turnCamera" , () => {
-      turnCamera()
+    socket.on("turnCamera" , (senderFacingMode) => {
+      turnCamera(senderFacingMode)
     })
     
   },[])
@@ -44,12 +46,15 @@ const Camera = () => {
   useEffect(() => {
     setupCamera();
     
+    
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach(track => track.stop());
       }
     };
+    
+
      
     //to be able to turn camera
   }, [facingMode]);
@@ -60,6 +65,22 @@ const Camera = () => {
       saveToDBAndBeyond(itemToDownload,id)
     }
   },[itemToDownload])
+  
+  
+  useEffect(()=>{
+    setDeviceInfo(prevv => {
+      return {
+        ...prevv, 
+        cameraComponentStates : {
+          ...prevv.cameraComponentStates,
+          facingMode : facingMode,
+          itemToDownload : itemToDownload,
+          videoChunks : videoChunks, 
+          mediaRecorder : mediaRecorder,
+        }
+      }
+    })
+  },[facingMode, itemToDownload, videoChunks, mediaRecorder])
   
   //
     
@@ -101,7 +122,7 @@ const Camera = () => {
   };
 
   
-  const startRecording = () => {
+  const startRecording2 = () => {
     setIsRecording(true)
     if (!videoRef.current) return;
     const stream = videoRef.current.srcObject
@@ -128,8 +149,34 @@ const Camera = () => {
     setMediaRecorder(recorder);
   };
   
+  const startRecording = () => {
+    if (!videoRef.current) return;
+    const stream = videoRef.current.srcObject
+    
+    let options = { mimeType: 'video/webm;codecs=vp9' };
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options = { mimeType: 'video/webm;codecs=vp8' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options = { mimeType: 'video/webm' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: '' };
+            }
+        }
+    }
+    const recorder = new MediaRecorder(stream, options );
+    let arr = []
+    recorder.ondataavailable = (event) => {
+      if(event.data.size > 0){
+        arr.push(event.data)
+      }
+    };
+    setVideoChunks(arr)
+    recorder.start(100);
+    setMediaRecorder(recorder);
+  };
   
-  const stopRecording = () => {
+  
+  const stopRecording2 = () => {
     if (mediaRecorder) {
       
         setIsRecording(false);
@@ -142,13 +189,36 @@ const Camera = () => {
     }
   };
   
-  const turnCamera = () => {
+    
+  const stopRecording = (senderCameraStates) => {
+    if (senderCameraStates.mediaRecorder) {
+      
+        //setIsRecording(false);
+        const videoBlob = new Blob(senderCameraStates.videoChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(videoBlob);
+  
+      setItemToDownload({ type : "video", blobUrl : url })
+      setVideoChunks([]);
+      senderCameraStates.mediaRecorder.stop();
+    }
+  };
+  
+  const turnCamera = (senderFacingMode) => {
+    if(senderFacingMode === "user"){
+      setFacingMode("environment")
+    }else{
+      setFacingMode("user")
+    }
+  }
+  
+  const turnCamera2 = () => {
     if(facingMode === "user"){
       setFacingMode("environment")
     }else{
       setFacingMode("user")
     }
   }
+  
   
   const saveToDBAndBeyond = (item,id) => {
     saveToFileDB(item,id)
@@ -162,25 +232,22 @@ const Camera = () => {
   return (
     <div className="">
       { !isFailed && (
-        <div>
+        <div className="flex">
         
-        <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className=""></video>
+        <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className="border-2 border-black rounded"></video>
         
         {/* i don't know why but this hs needed, probably to use canvas.getContext */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         
-        <button onClick={startRecording}
-          className="bg-blue-400 p-1 m-1 rounded"
-        >start</button>
-        <button onClick={stopRecording}
-          className="bg-blue-400 p-1 m-1 rounded"
-        >stop</button>
-        <button onClick={turnCamera}
-          className="bg-blue-400 p-1 m-1 rounded"
-        >turn</button>
-        <button onClick={capturePhoto}
-          className="bg-blue-400 p-1 m-1 rounded"
-        >capture</button>
+        { !isRecording &&
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={turnCamera2}> turn</button>
+        }
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={capturePhoto}> capture</button>
+        { !isRecording ?
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={startRecording2}> record</button>
+        :
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={stopRecording2}> stop</button>
+        }
         </div>
       )}
       

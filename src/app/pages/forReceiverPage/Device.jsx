@@ -2,12 +2,14 @@
 import { useState, useEffect, useContext } from "react"
 import { Context } from "../../ContextProvider"
 
-export default function Device ({data,index, sendingDevices, setSendingDevices}) {
-  const { socket, deviceInfo } = useContext(Context)
+export default function Device ({data,index, sendingDevices, setSendingDevices, setDoAnimation}) {
+  const { socket, deviceInfo, setDeviceInfo } = useContext(Context)
   const [ isRecording, setIsRecording ] = useState(false)
   
+  
+  
   const updateList = () => {
-    
+    setDoAnimation(true)
     //just to trigger animation
     const arrr = []
     sendingDevices.map(obj => {
@@ -32,6 +34,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
   
   
   const orderCapturePhoto = () => {
+    setDoAnimation(false)
     const twoDevices = {
       sender : {
         deviceName : data.deviceName,
@@ -45,26 +48,35 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
   }
   
   const orderStartRecording = () => {
+    setDoAnimation(false)
     setIsRecording(true)
-    socket.emit("orderStartRecording", data.socketId )
+    const senderId = data.socketId
+    socket.emit("orderStartRecording", senderId )
   }
   
   const orderStopRecording = () => {
+    setDoAnimation(false)
     setIsRecording(false)
     const twoDevices = {
       sender : {
         deviceName : data.deviceName,
-        socketId : data.socketId
+        socketId : data.socketId,
+        cameraComponentStates : data.cameraComponentStates
         },
       receiver : {
-        socketId : deviceInfo.socketId
+        socketId : deviceInfo.socketId,
       }
     }    
     socket.emit("orderStopRecording", twoDevices )
   }
   
   const orderTurnCamera = () => {
-    socket.emit("orderTurnCamera",data.socketId)
+    setDoAnimation(false)
+    const sender = {
+      socketId : data.socketId,
+      facingMode : data.cameraComponentStates.facingMode
+    }
+    socket.emit("orderTurnCamera",sender)
   }
   
   const closeConnection = () => {
@@ -100,7 +112,9 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
         <div className="absolute bottom-0 left-0 w-full">
           <div className="flex justify-between mr-2 ml-2">
             { !isRecording &&
-              <button className="bg-blue-400 p-1 rounded shadow"> turn</button>
+              <button className="bg-blue-400 p-1 rounded shadow"
+                onClick={orderTurnCamera}
+              > turn</button>
             }
             <button className="bg-blue-400 p-1 rounded shadow"
               onClick={orderCapturePhoto}
@@ -117,6 +131,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices})
             }
           </div>
           <p>should be invisible if no peer stream sent </p>
+
         </div>
       </div>
       
