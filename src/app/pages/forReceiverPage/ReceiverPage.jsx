@@ -64,7 +64,7 @@ function App () {
 }
 
 export default function App2 (){
-  const { setDeviceInfo , deviceInfo } = useContext(Context)
+  const { setDeviceInfo } = useContext(Context)
   const location = useLocation()
   
   useEffect(()=>{
@@ -81,7 +81,6 @@ export default function App2 (){
   return (
     <div className="w-screen h-screen flex flex-col">
       <GroupName />
-      <p>{JSON.stringify(deviceInfo)}</p>
       <div className="flex-auto">
         <App />
       </div>

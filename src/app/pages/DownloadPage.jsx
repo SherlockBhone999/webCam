@@ -2,6 +2,10 @@ import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { useIndexedDB } from './forSenderPage/indexedDB/useIndexedDB';
 
+
+import { format } from 'date-fns';
+
+
 export default function App () {
   const location = useLocation()
   const { fetchFromFileDB, fileContent, error, deleteItemInDB } = useIndexedDB();
@@ -23,21 +27,30 @@ export default function App () {
     }
   },[fileContent])
   
+  const generateFilename = () => {
+    const now = new Date();
+    const formattedDate = format(now, 'hh-mm_dd-MM-yyyy');
+    return `${formattedDate}_webCam`;
+  };
+  
   const download = () => {
     const type = fileContent.type;
     const blobUrl = fileContent.blobUrl
     const link = document.createElement('a');
     link.href = blobUrl;
     if(type === "image"){
-      link.download = `downloaded_file${new Date().getSeconds()}.png`
+      link.download = `${generateFilename()}.png`
     }else{
-      link.download = `downloaded_file${new Date().getSeconds()}`
+      link.download = `${generateFilename()}`
     }
     document.body.appendChild(link);
     link.click();
     link.remove();
     
   }
+  
+  
+
 
   
   return (
