@@ -3,8 +3,8 @@ import { useState, useEffect, createContext } from "react"
 
 import io  from "socket.io-client"
 
-//const serverUrl = "https://webcamserver.onrender.com"
-const serverUrl ="http://localhost:3000"
+const serverUrl = "https://webcamserver.onrender.com"
+//const serverUrl ="http://localhost:3000"
 const socket = io(serverUrl)
 
 
