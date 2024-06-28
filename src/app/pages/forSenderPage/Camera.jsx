@@ -80,7 +80,7 @@ const Camera = () => {
         }
       }
     })
-  },[facingMode, itemToDownload, videoChunks, mediaRecorder])
+  },[facingMode, itemToDownload, videoChunks, mediaRecorder ])
   
   //
     
@@ -193,13 +193,12 @@ const Camera = () => {
   const stopRecording = (senderCameraStates) => {
     if (senderCameraStates.mediaRecorder) {
       
-        //setIsRecording(false);
         const videoBlob = new Blob(senderCameraStates.videoChunks, { type: 'video/webm' });
         const url = URL.createObjectURL(videoBlob);
   
       setItemToDownload({ type : "video", blobUrl : url })
       setVideoChunks([]);
-      senderCameraStates.mediaRecorder.stop();
+      mediaRecorder.stop();
     }
   };
   

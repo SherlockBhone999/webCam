@@ -3,6 +3,7 @@ import GroupName from "../../components/GroupName"
 import Devices from "./Devices"
 import NotiBox from "./NotiBox"
 
+import Camera from "../forSenderPage/Camera"
 
 import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
@@ -84,7 +85,10 @@ export default function App2 (){
       <div className="flex-auto">
         <App />
       </div>
-
+      
+      <div className="fixed bottom-10 left-10">
+        <Camera />
+      </div>
 
     </div>
   )

@@ -1,10 +1,10 @@
 import NavigationContainer from "./NavigationContainer"
-import { useState, useEffect, createContext } from "react"
-
+import { useState, useEffect, createContext, useRef } from "react"
+import Peer from "peerjs"
 import io  from "socket.io-client"
 
-const serverUrl = "https://webcamserver.onrender.com"
-//const serverUrl ="http://localhost:3000"
+//const serverUrl = "https://webcamserver.onrender.com"
+const serverUrl ="http://localhost:3000"
 const socket = io(serverUrl)
 
 
@@ -32,6 +32,7 @@ export default function App () {
       itemToDownload : null,
     },
   })
+  const peerConnectionRef = useRef(null)
   
   
   useEffect(()=>{
@@ -53,6 +54,17 @@ export default function App () {
       setAllDevices(devices)
     })
     
+    const peer = new Peer()
+    peer.on("open", (peerId) => {
+      setDeviceInfo(prevv => {
+        return {
+          ...prevv,
+          peerId : peerId
+        }
+      })
+    })
+    
+    peerConnectionRef.current = peer
   },[])
   
   useEffect(()=>{
@@ -104,7 +116,7 @@ export default function App () {
       deviceInfo,
       setDeviceInfo,
       socket,
-
+      peerConnectionRef,
       
     }}>
       <NavigationContainer />
