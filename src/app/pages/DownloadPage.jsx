@@ -11,9 +11,10 @@ export default function App () {
   const { fetchFromFileDB, fileContent, error, deleteItemInDB } = useIndexedDB();
   
   useEffect(()=>{
-    const id = location.pathname.substring(10)
+    const id = location.pathname?.substring(10)
     fetchFromFileDB(id)
-  },[])
+    
+  },[location])
   
   useEffect(()=>{
     const id = location.pathname.substring(10)
@@ -29,7 +30,7 @@ export default function App () {
   
   const generateFilename = () => {
     const now = new Date();
-    const formattedDate = format(now, 'hh-mm_dd-MM-yyyy');
+    const formattedDate = format(now, 'hhmmss_ddMMyyyy');
     return `${formattedDate}_webCam`;
   };
   

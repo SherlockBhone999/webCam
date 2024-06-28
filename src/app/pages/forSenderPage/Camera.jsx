@@ -5,6 +5,8 @@ import { useIndexedDB } from './indexedDB/useIndexedDB';
 import { v4 as uuidv4 } from 'uuid';
 
 
+let recorder = null;
+
 const Camera = () => {
   const [isRecording, setIsRecording] = useState(false);
   const videoRef = useRef(null);
@@ -83,6 +85,9 @@ const Camera = () => {
   },[facingMode, itemToDownload, videoChunks, mediaRecorder ])
   
   //
+  
+
+  //
     
     const setupCamera = async () => {
       try {
@@ -145,11 +150,34 @@ const Camera = () => {
       }
     };
     setVideoChunks(arr)
-    recorder.start(100);
+    recorder.start(10);
     setMediaRecorder(recorder);
   };
   
+  
+  const stopRecording2 = () => {
+    if (mediaRecorder) {
+        setIsRecording(false);
+        const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(videoBlob);
+  
+      setItemToDownload({ type : "video", blobUrl : url })
+      setVideoChunks([]);
+      mediaRecorder.stop();
+    }
+  };
+  
+  const turnCamera2 = () => {
+    if(facingMode === "user"){
+      setFacingMode("environment")
+    }else{
+      setFacingMode("user")
+    }
+  }
+  
+  
   const startRecording = () => {
+
     if (!videoRef.current) return;
     const stream = videoRef.current.srcObject
     
@@ -163,7 +191,7 @@ const Camera = () => {
             }
         }
     }
-    const recorder = new MediaRecorder(stream, options );
+    recorder = new MediaRecorder(stream, options );
     let arr = []
     recorder.ondataavailable = (event) => {
       if(event.data.size > 0){
@@ -171,47 +199,26 @@ const Camera = () => {
       }
     };
     setVideoChunks(arr)
-    recorder.start(100);
+    recorder.start(10);
     setMediaRecorder(recorder);
   };
   
   
-  const stopRecording2 = () => {
-    if (mediaRecorder) {
-      
-        setIsRecording(false);
-        const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(videoBlob);
-  
-      setItemToDownload({ type : "video", blobUrl : url })
-      setVideoChunks([]);
-      mediaRecorder.stop();
-    }
-  };
-  
+
     
   const stopRecording = (senderCameraStates) => {
-    if (senderCameraStates.mediaRecorder) {
-      
+    if(senderCameraStates.mediaRecorder){
         const videoBlob = new Blob(senderCameraStates.videoChunks, { type: 'video/webm' });
         const url = URL.createObjectURL(videoBlob);
   
       setItemToDownload({ type : "video", blobUrl : url })
       setVideoChunks([]);
-      mediaRecorder.stop();
+      recorder.stop();
     }
   };
   
   const turnCamera = (senderFacingMode) => {
     if(senderFacingMode === "user"){
-      setFacingMode("environment")
-    }else{
-      setFacingMode("user")
-    }
-  }
-  
-  const turnCamera2 = () => {
-    if(facingMode === "user"){
       setFacingMode("environment")
     }else{
       setFacingMode("user")

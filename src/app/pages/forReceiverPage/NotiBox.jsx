@@ -6,7 +6,6 @@ import { Context } from "../../ContextProvider"
 
 export default function App () {
   const [notiArr, setNotiArr] = useState([""])
-  const typedRef = useRef(null)
   const { socket } = useContext(Context)
   
   useEffect(()=>{
@@ -18,7 +17,7 @@ export default function App () {
   },[])
   
   const handleComplete = () => {
-    setNotiArr([])
+    setNotiArr([""])
   }
   
   
