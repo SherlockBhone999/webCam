@@ -10,14 +10,13 @@ import { format } from 'date-fns';
 
 const Camera = () => {
   const [isRecording, setIsRecording] = useState(false);
-  //const videoRef = useRef(null);
   
   const [isFailed, setIsFailed] = useState(false)
   const canvasRef = useRef(null);
-  const [ facingMode, setFacingMode ] = useState("user")
+  //const [ facingMode, setFacingMode ] = useState("user")
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blob : null })
   const mediaRecorderRef = useRef(null)
-  const { socket, setDeviceInfo , browserName , videoRef } = useContext(Context)
+  const { socket, setDeviceInfo , browserName , videoRef, facingMode, setFacingMode } = useContext(Context)
   
 
   

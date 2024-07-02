@@ -6,9 +6,15 @@ import { Context } from '../../ContextProvider'
 
 const Device = ({data}) => {
   const [isBeingSentTo, setIsBeingSentTo] = useState(false)
-  const { peerConnectionRef, videoRef } = useContext(Context)
+  const { peerConnectionRef, videoRef, facingMode } = useContext(Context)
   const callRef = useRef(null)
   
+  
+  useEffect(()=>{
+    if(isBeingSentTo){
+      call(data.peerId)
+    }
+  },[facingMode, isBeingSentTo])
   
   const call = (peerId) => {
     theCall = peerConnectionRef.current.call(peerId, videoRef.current?.srcObject);
@@ -18,6 +24,7 @@ const Device = ({data}) => {
   const send = () => {
     setIsBeingSentTo(true)
     call(data.peerId)
+    
   }
   
   const cancel = () => {

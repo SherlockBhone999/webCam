@@ -31,6 +31,7 @@ export default function App () {
   const [browserName, setBrowserName] = useState("")
   //camera stream 
   const videoRef = useRef(null);
+  const [ facingMode, setFacingMode ] = useState("user")
   
   useEffect(()=>{
     
@@ -128,6 +129,8 @@ export default function App () {
       peerConnectionRef,
       browserName,
       videoRef,
+      facingMode,
+      setFacingMode,
       
     }}>
       <NavigationContainer />
