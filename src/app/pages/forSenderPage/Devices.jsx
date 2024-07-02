@@ -14,7 +14,7 @@ const Device = ({data}) => {
     if(isBeingSentTo){
       call(data.peerId)
     }
-  },[facingMode, isBeingSentTo])
+  },[facingMode])
   
   const call = (peerId) => {
     theCall = peerConnectionRef.current.call(peerId, videoRef.current?.srcObject);
