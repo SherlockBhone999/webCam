@@ -1,9 +1,11 @@
-//initial setup
 
 import DeviceInfo from "./DeviceInfo"
-import { useNavigate } from "react-router-dom"
+import DBItems from "./DBItems"
+import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useContext } from 'react';
+import { Context } from "../../ContextProvider"
+
 
 const pageVariants2 = {
   initial : { opacity : 0, scale : 0.9 },
@@ -23,6 +25,19 @@ import { useIndexedDB } from '../forSenderPage/indexedDB/useIndexedDB';
 
 export default function App () {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { setDeviceInfo } = useContext(Context)
+  
+  useEffect(()=>{
+    if(location.pathname.includes("setting")){
+      setDeviceInfo(prevv => {
+        return {...prevv,
+          status : "",
+        }
+      })
+    }
+  },[location])
+  
   return (
     <AnimatePresence>
         <motion.div className="w-screen h-screen bg-gray-200"
@@ -34,14 +49,16 @@ export default function App () {
         >
           <div className="flex justify-end">
             <button className="bg-blue-400 p-2 m-1 rounded"
-              onClick={()=>navigate("/")}
+              onClick={()=>navigate(-1)}
             >
               Back
             </button>
           </div>
-
+          
           <DeviceInfo />
-    
+          
+          <DBItems />
+          
         </motion.div>
     </AnimatePresence>
   )

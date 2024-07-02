@@ -1,52 +1,52 @@
-import { useEffect } from "react"
+import { useEffect, useContext , useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useIndexedDB } from './forSenderPage/indexedDB/useIndexedDB';
-
-
-import { format } from 'date-fns';
+import { Context } from "../ContextProvider"
 
 
 export default function App () {
   const location = useLocation()
-  const { fetchFromFileDB, fileContent, error, deleteItemInDB } = useIndexedDB();
+  const { fetchFromFileDB, fileContent, error } = useIndexedDB();
+  const { browserName } = useContext(Context)
+  const [ id, setId ] = useState("")
   
   useEffect(()=>{
     const id = location.pathname?.substring(10)
+    setId(id)
     fetchFromFileDB(id)
     
   },[location])
   
-  useEffect(()=>{
-    const id = location.pathname.substring(10)
-    if(fileContent){
-      download()
-      
-      setTimeout(()=>{
-        deleteItemInDB(id)
-        window.close()
-      },20)
+  useEffect( ()=>{
+    if(fileContent && id ){
+      download(id)
+      if(browserName === "Chrome"){
+        setTimeout(()=>{
+          window.close()
+        },100)
+      }
     }
-  },[fileContent])
+  },[fileContent,id])
   
-  const generateFilename = () => {
-    const now = new Date();
-    const formattedDate = format(now, 'hhmmss_ddMMyyyy');
-    return `${formattedDate}_webCam`;
-  };
-  
-  const download = () => {
-    const type = fileContent.type;
-    const blobUrl = fileContent.blobUrl
+  const download = (id) => {
+    const type = fileContent?.type;
+    const blob = fileContent?.blob;
+    const blobUrl = URL.createObjectURL(blob)
     const link = document.createElement('a');
     link.href = blobUrl;
     if(type === "image"){
-      link.download = `${generateFilename()}.png`
+      link.download = `${id}_webCam.png`
     }else{
-      link.download = `${generateFilename()}`
+      link.download = `${id}_webCam`
     }
     document.body.appendChild(link);
     link.click();
-    link.remove();
+    document.body.removeChild(link)
+    
+    setTimeout(()=>{
+      //setTimeout will still run even after component dismounted
+      URL.revokeObjectURL(blobUrl)
+    },500)
     
   }
   
@@ -56,8 +56,9 @@ export default function App () {
   
   return (
     <div>
-      <p>downloading...</p>
-      <button onClick={download}>download</button>
+      <p>file : {id}</p>
+      <p>{fileContent?.blob.size}</p>
+      <button onClick={()=>download(id)} className="bg-green-400 p-2 m-1 rounded">download</button>
       { error && <p>"indexedDB error :" {error}</p>
       }
   

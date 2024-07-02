@@ -2,31 +2,33 @@
 import React, { useRef , useEffect , useState, useContext} from 'react';
 import { Context } from "../../ContextProvider"
 import { useIndexedDB } from './indexedDB/useIndexedDB';
-import { v4 as uuidv4 } from 'uuid';
+
+import { format } from 'date-fns';
 
 
-let recorder = null;
+
 
 const Camera = () => {
   const [isRecording, setIsRecording] = useState(false);
   const videoRef = useRef(null);
-  const [videoChunks, setVideoChunks] = useState([]);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+  
   const [isFailed, setIsFailed] = useState(false)
   const canvasRef = useRef(null);
   const [ facingMode, setFacingMode ] = useState("user")
-  const [ itemToDownload, setItemToDownload ] = useState({ type : "", blobUrl : "" })
-  const { socket, setDeviceInfo } = useContext(Context)
+  const [ itemToDownload, setItemToDownload ] = useState({ type : "", blob : null })
+  const mediaRecorderRef = useRef(null)
+  const { socket, setDeviceInfo , browserName } = useContext(Context)
+  
 
   
   const { saveToFileDB, error } = useIndexedDB();
  
   useEffect(()=>{
-    setupCamera();
     
     socket.on("capturePhoto", (twoDevices)=>{
       capturePhoto()
       socket.emit("feedbackPhotoSaved", twoDevices )
+      
     })
     
     socket.on("startRecording" , () => {
@@ -34,14 +36,15 @@ const Camera = () => {
     })
     
     socket.on("stopRecording" , (twoDevices) => {
-      const senderCameraStates = twoDevices.sender.cameraComponentStates
-      stopRecording(senderCameraStates)
+      stopRecording()
       socket.emit("feedbackVideoSaved", twoDevices )
     })
     
     socket.on("turnCamera" , (senderFacingMode) => {
       turnCamera(senderFacingMode)
     })
+  
+    
     
   },[])
   
@@ -62,8 +65,8 @@ const Camera = () => {
   }, [facingMode]);
   
   useEffect(()=>{
-    if(itemToDownload.type !== "" && itemToDownload.blobUrl !== ""){
-      const id = uuidv4()
+    if(itemToDownload.type !== "" && itemToDownload.blob !== null){
+      const id = generateFilename()
       saveToDBAndBeyond(itemToDownload,id)
     }
   },[itemToDownload])
@@ -73,39 +76,58 @@ const Camera = () => {
     setDeviceInfo(prevv => {
       return {
         ...prevv, 
-        cameraComponentStates : {
-          ...prevv.cameraComponentStates,
-          facingMode : facingMode,
-          itemToDownload : itemToDownload,
-          videoChunks : videoChunks, 
-          mediaRecorder : mediaRecorder,
-        }
+        facingMode : facingMode,
       }
     })
-  },[facingMode, itemToDownload, videoChunks, mediaRecorder ])
+  },[facingMode ])
   
   //
   
 
   //
     
-    const setupCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { 
-            facingMode : facingMode , 
-            //width: { ideal: 1920 }, //4096 //1920
-            //height: { ideal: 1080 } //2160 //1080
-        } , audio : true });
+  const setupCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { 
+          facingMode : facingMode , 
+          width: { ideal: 1920 }, //4096 //1920
+          height: { ideal: 1080 } //2160 //1080
+      } , audio : true });
         
         
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-        
-      } catch (error) {
-        setIsFailed(true)
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
       }
-    };
+        
+      let options = { mimeType: 'video/webm;codecs=vp9' };
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+          options = { mimeType: 'video/webm;codecs=vp8' };
+          if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+              options = { mimeType: 'video/webm' };
+              if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                  options = { mimeType: '' };
+              }
+          }
+      }
+      const recorder = new MediaRecorder(stream, options );
+      let arr = []
+      recorder.ondataavailable = (event) => {
+        if(event.data.size > 0){
+          arr.push(event.data)
+        }
+      };
+      recorder.onstop = () => {
+        const videoBlob = new Blob( arr, { type: 'video/webm' });
+        setItemToDownload({ type : "video", blob : videoBlob })
+        arr = []
+      }
+      
+      mediaRecorderRef.current = recorder;  
+        
+    } catch (error) {
+      setIsFailed(true)
+    }
+  };
  
   
   const capturePhoto = () => {
@@ -119,8 +141,7 @@ const Camera = () => {
       
       
       canvas.toBlob( blob => {
-        const imgUrl = URL.createObjectURL(blob)
-        setItemToDownload({ type : "image" , blobUrl : imgUrl })
+        setItemToDownload({ type : "image" , blob : blob })
       })
       
     }
@@ -129,42 +150,12 @@ const Camera = () => {
   
   const startRecording2 = () => {
     setIsRecording(true)
-    if (!videoRef.current) return;
-    const stream = videoRef.current.srcObject
-    
-    let options = { mimeType: 'video/webm;codecs=vp9' };
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        options = { mimeType: 'video/webm;codecs=vp8' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            options = { mimeType: 'video/webm' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: '' };
-            }
-        }
-    }
-    const recorder = new MediaRecorder(stream, options );
-    let arr = []
-    recorder.ondataavailable = (event) => {
-      if(event.data.size > 0){
-        arr.push(event.data)
-      }
-    };
-    setVideoChunks(arr)
-    recorder.start(10);
-    setMediaRecorder(recorder);
+    mediaRecorderRef.current.start(10)
   };
   
-  
   const stopRecording2 = () => {
-    if (mediaRecorder) {
-        setIsRecording(false);
-        const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(videoBlob);
-  
-      setItemToDownload({ type : "video", blobUrl : url })
-      setVideoChunks([]);
-      mediaRecorder.stop();
-    }
+    setIsRecording(false)
+    mediaRecorderRef.current.stop()
   };
   
   const turnCamera2 = () => {
@@ -177,44 +168,14 @@ const Camera = () => {
   
   
   const startRecording = () => {
-
-    if (!videoRef.current) return;
-    const stream = videoRef.current.srcObject
-    
-    let options = { mimeType: 'video/webm;codecs=vp9' };
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        options = { mimeType: 'video/webm;codecs=vp8' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            options = { mimeType: 'video/webm' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: '' };
-            }
-        }
-    }
-    recorder = new MediaRecorder(stream, options );
-    let arr = []
-    recorder.ondataavailable = (event) => {
-      if(event.data.size > 0){
-        arr.push(event.data)
-      }
-    };
-    setVideoChunks(arr)
-    recorder.start(10);
-    setMediaRecorder(recorder);
+    mediaRecorderRef.current.start(10)
   };
   
   
 
     
-  const stopRecording = (senderCameraStates) => {
-    if(senderCameraStates.mediaRecorder){
-        const videoBlob = new Blob(senderCameraStates.videoChunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(videoBlob);
-  
-      setItemToDownload({ type : "video", blobUrl : url })
-      setVideoChunks([]);
-      recorder.stop();
-    }
+  const stopRecording = () => {
+    mediaRecorderRef.current.stop()
   };
   
   const turnCamera = (senderFacingMode) => {
@@ -228,11 +189,19 @@ const Camera = () => {
   
   const saveToDBAndBeyond = (item,id) => {
     saveToFileDB(item,id)
-    let downloadWindow;
-    setTimeout(()=> { 
-      downloadWindow = window.open(`/download/${id}`, '_blank');
-    }, 10)      
+    if(browserName === "Chrome"){
+      let downloadWindow;
+      setTimeout(()=> { 
+        downloadWindow = window.open(`/download/${id}`, '_blank');
+      }, 10)      
+    }
   }
+  
+  const generateFilename = () => {
+    const now = new Date();
+    const formattedDate = format(now, 'hhmmss-ddMMyyyy');
+    return `${formattedDate}`;
+  };
   
   //
   return (
@@ -241,6 +210,7 @@ const Camera = () => {
         <div className="flex">
         
         <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className="border-2 border-black rounded"></video>
+        
         
         {/* i don't know why but this hs needed, probably to use canvas.getContext */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />

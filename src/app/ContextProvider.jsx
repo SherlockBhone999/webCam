@@ -3,8 +3,8 @@ import { useState, useEffect, createContext, useRef } from "react"
 import Peer from "peerjs"
 import io  from "socket.io-client"
 
-const serverUrl = "https://webcamserver.onrender.com"
-//const serverUrl ="http://localhost:3000"
+//const serverUrl = "https://webcamserver.onrender.com"
+const serverUrl ="http://localhost:3000"
 const socket = io(serverUrl)
 
 
@@ -24,21 +24,17 @@ export default function App () {
     peerId : "",
     roomName : "",
     cameraCount : 0,
-    //orderTurnCamera need it 
-    cameraComponentStates : {
-      facingMode : "",
-      videoChunks : [],
-      mediaRecorder : null,
-      itemToDownload : null,
-    },
+    //orderTurnCamera need it
+    facingMode : "",
   })
   const peerConnectionRef = useRef(null)
-  
+  const [browserName, setBrowserName] = useState("")
   
   useEffect(()=>{
     
     getDeviceInfo()
     checkCameras()
+    getBrowserName()
     
     socket.on("connect", () => {
       setDeviceInfo(prevv => {
@@ -107,6 +103,17 @@ export default function App () {
         })
       }
     };
+    
+    const getBrowserName = () => {
+      const userAgent = navigator.userAgent;
+      if (userAgent.includes("Chrome") && !userAgent.includes("Edg") && !userAgent.includes("OPR")) {
+            setBrowserName("Chrome");
+        } else if (userAgent.includes("Edg") || userAgent.includes("EdgA") || userAgent.includes("EdgiOS")) {
+            setBrowserName("Edge");
+        } else {
+            setBrowserName("Other");
+        }
+    }
   
   
   return (
@@ -117,6 +124,7 @@ export default function App () {
       setDeviceInfo,
       socket,
       peerConnectionRef,
+      browserName,
       
     }}>
       <NavigationContainer />

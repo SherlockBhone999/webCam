@@ -22,7 +22,7 @@ export default function Devices(){
   deviceInfo } = useContext(Context)
   const [ sendingDevices, setSendingDevices ] = useState([])
   const [ isActive, setIsActive] = useState(true)
-  const [doAnimation, setDoAnimation] = useState(true)
+  const [doAnimation, setDoAnimation] = useState(false)
   
   useEffect(()=>{
     

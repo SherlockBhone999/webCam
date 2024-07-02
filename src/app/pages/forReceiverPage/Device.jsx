@@ -47,11 +47,12 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
     socket.emit("orderCapturePhoto", twoDevices )
   }
   
+  
   const orderStartRecording = () => {
     setDoAnimation(false)
     setIsRecording(true)
     const senderId = data.socketId
-    socket.emit("orderStartRecording", senderId )
+    socket.emit("orderStartRecording", senderId)
   }
   
   const orderStopRecording = () => {
@@ -61,7 +62,6 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       sender : {
         deviceName : data.deviceName,
         socketId : data.socketId,
-        cameraComponentStates : data.cameraComponentStates
         },
       receiver : {
         socketId : deviceInfo.socketId,
@@ -74,7 +74,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
     setDoAnimation(false)
     const sender = {
       socketId : data.socketId,
-      facingMode : data.cameraComponentStates.facingMode
+      facingMode : data.facingMode
     }
     socket.emit("orderTurnCamera",sender)
   }

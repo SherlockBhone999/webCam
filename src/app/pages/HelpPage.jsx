@@ -1,6 +1,8 @@
 
 import { useNavigate } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useContext } from "react"
+import { Context } from "../ContextProvider"
 
 const pageVariants2 = {
   initial : { opacity : 0, scale : 0.9 },
@@ -16,6 +18,16 @@ const pageTransition2 = {
 
 export default function App () {
   const navigate = useNavigate()
+  const { setDeviceInfo } = useContext(Context)
+  useEffect(()=>{
+    if(location.pathname.includes("help")){
+      setDeviceInfo(prevv => {
+        return {...prevv,
+          status : "",
+        }
+      })
+    }
+  },[location])
 
   return (
     <AnimatePresence>
