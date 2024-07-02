@@ -11,9 +11,11 @@ const Device = ({data}) => {
   
   
   useEffect(()=>{
-    if(isBeingSentTo){
-      call(data.peerId)
-    }
+    setTimeout(()=>{ 
+      if(isBeingSentTo){
+        call(data.peerId)
+      }
+    },500)
   },[facingMode])
   
   const call = (peerId) => {
