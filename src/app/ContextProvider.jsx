@@ -29,6 +29,8 @@ export default function App () {
   })
   const peerConnectionRef = useRef(null)
   const [browserName, setBrowserName] = useState("")
+  //camera stream 
+  const videoRef = useRef(null);
   
   useEffect(()=>{
     
@@ -125,6 +127,7 @@ export default function App () {
       socket,
       peerConnectionRef,
       browserName,
+      videoRef,
       
     }}>
       <NavigationContainer />

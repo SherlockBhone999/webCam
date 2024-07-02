@@ -3,7 +3,6 @@ import GroupName from "../../components/GroupName"
 import Devices from "./Devices"
 import NotiBox from "./NotiBox"
 
-import Camera from "../forSenderPage/Camera"
 
 import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
@@ -52,6 +51,7 @@ function App () {
               
               <div className="flex-auto bg-yellow-50 overflow-scroll ml-1 mr-1">
                 <Devices />
+              
               </div>
               
             </div>
@@ -86,9 +86,6 @@ export default function App2 (){
         <App />
       </div>
       
-      <div className="fixed bottom-10 left-10">
-        <Camera />
-      </div>
 
     </div>
   )

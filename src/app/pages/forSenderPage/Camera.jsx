@@ -10,14 +10,14 @@ import { format } from 'date-fns';
 
 const Camera = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const videoRef = useRef(null);
+  //const videoRef = useRef(null);
   
   const [isFailed, setIsFailed] = useState(false)
   const canvasRef = useRef(null);
   const [ facingMode, setFacingMode ] = useState("user")
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blob : null })
   const mediaRecorderRef = useRef(null)
-  const { socket, setDeviceInfo , browserName } = useContext(Context)
+  const { socket, setDeviceInfo , browserName , videoRef } = useContext(Context)
   
 
   
@@ -208,7 +208,7 @@ const Camera = () => {
     <div className="">
       { !isFailed && (
         <div className="flex">
-        
+      
         <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className="border-2 border-black rounded"></video>
         
         

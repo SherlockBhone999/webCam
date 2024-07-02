@@ -36,6 +36,7 @@ const Container = () => {
         className="w-full h-full"
       >
         <div className="w-full h-full flex flex-col justify-between ">
+
           { deviceInfo?.socketId ?
             <div className=" p-1 flex justify-center ">
               <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"

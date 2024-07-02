@@ -1,11 +1,26 @@
 
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext , useRef } from "react"
 import { Context } from "../../ContextProvider"
 
 export default function Device ({data,index, sendingDevices, setSendingDevices, setDoAnimation}) {
-  const { socket, deviceInfo, setDeviceInfo } = useContext(Context)
+  const { socket, deviceInfo, setDeviceInfo, peerConnectionRef } = useContext(Context)
   const [ isRecording, setIsRecording ] = useState(false)
+  const videoRef = useRef(null)
   
+  
+  useEffect(()=>{
+    peerConnectionRef.current.on("call", (call) => {
+      call.answer();
+      call.on("stream", function (remoteStream) {
+        videoRef.current.srcObject = remoteStream;
+        videoRef.current.play();
+      });
+      
+      call.on('close', () => {
+        videoRef.current.srcObject = null;
+      })
+    });
+  },[])
   
   
   const updateList = () => {
@@ -86,7 +101,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   return (
     <div className="w-full h-full p-1 bg-green-300 border border-2 border-black rounded">
       <div className="relative" >
-        <div className="h-60" />
+        
         <div className="absolute top-0 w-full flex justify-between">
           <div>
             
@@ -107,6 +122,10 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
               close
             </button>
           </div>
+        </div>
+        
+        <div className="p-10 flex justify-center">
+          <video ref={videoRef} autoPlay muted style={{ width: '90%' }}/>
         </div>
         
         <div className="absolute bottom-0 left-0 w-full">

@@ -1,18 +1,28 @@
 
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Context } from '../../ContextProvider'
 
 
 const Device = ({data}) => {
   const [isBeingSentTo, setIsBeingSentTo] = useState(false)
+  const { peerConnectionRef, videoRef } = useContext(Context)
+  const callRef = useRef(null)
+  
+  
+  const call = (peerId) => {
+    theCall = peerConnectionRef.current.call(peerId, videoRef.current?.srcObject);
+    callRef.current = theCall;
+  }
   
   const send = () => {
     setIsBeingSentTo(true)
+    call(data.peerId)
   }
   
   const cancel = () => {
     setIsBeingSentTo(false)
+    callRef.current.close()
   }
   return (
     <div className="m-1 flex items-center">

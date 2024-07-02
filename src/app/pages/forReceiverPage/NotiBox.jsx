@@ -39,11 +39,6 @@ export default function App () {
       <p>_</p>
       </div>
       <div className="absolute top-0 right-0 w-1/12 h-full bg-blue-400" />
-      <button onClick={()=>{
-    
-        setNotiArr(["Tablet saved a photo",""])
-      
-      }}>click</button>
     </div>
   </div>
   )

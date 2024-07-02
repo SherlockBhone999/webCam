@@ -71,6 +71,7 @@ export default function Devices(){
               setDoAnimation={setDoAnimation}
             />
           )}
+          {/* deviceInfo.status &&
             <Device
               data={deviceInfo}
               index={0}
@@ -78,7 +79,7 @@ export default function Devices(){
               setSendingDevices={setSendingDevices}
               setDoAnimation={setDoAnimation}
             />
-
+            */}
         </motion.div>
       }
     </AnimatePresence>
