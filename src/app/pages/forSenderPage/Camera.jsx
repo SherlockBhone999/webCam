@@ -13,11 +13,10 @@ const Camera = () => {
   
   const [isFailed, setIsFailed] = useState(false)
   const canvasRef = useRef(null);
-  //const [ facingMode, setFacingMode ] = useState("user")
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blob : null })
   const mediaRecorderRef = useRef(null)
   const { socket, setDeviceInfo , browserName , videoRef, facingMode, setFacingMode } = useContext(Context)
-  
+  const [ isHidden, setIsHidden] = useState([])
 
   
   const { saveToFileDB, error } = useIndexedDB();
@@ -206,14 +205,15 @@ const Camera = () => {
   return (
     <div className="">
       { !isFailed && (
-        <div className="flex">
-      
-        <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className="border-2 border-black rounded"></video>
-        
-        
+        <div className="flex items-baseline">
         {/* i don't know why but this hs needed, probably to use canvas.getContext */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         
+        <video ref={videoRef} autoPlay muted style={{ width: '10%' }} className={`border-2 border-black rounded ${isHidden ? "hidden":""}`}></video>
+        
+        
+
+
         { !isRecording &&
         <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={turnCamera2}> turn</button>
         }
@@ -223,7 +223,13 @@ const Camera = () => {
         :
         <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={stopRecording2}> stop</button>
         }
+        { !isHidden ?
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={()=>setIsHidden(true)}> hide</button>
+        :
+        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={()=>setIsHidden(false)}> unhide </button>
+        }
         </div>
+        
       )}
       
       { isFailed && (

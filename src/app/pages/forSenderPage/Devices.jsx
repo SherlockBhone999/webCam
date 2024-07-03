@@ -11,15 +11,16 @@ const Device = ({data}) => {
   
   
   useEffect(()=>{
-    setTimeout(()=>{ 
-      if(isBeingSentTo){
+    if(isBeingSentTo){
+      callRef.current.close()
+      setTimeout(()=>{
         call(data.peerId)
-      }
-    },500)
+      },500)
+    }
   },[facingMode])
   
   const call = (peerId) => {
-    theCall = peerConnectionRef.current.call(peerId, videoRef.current?.srcObject);
+    const theCall = peerConnectionRef.current.call(peerId, videoRef.current?.srcObject);
     callRef.current = theCall;
   }
   
@@ -65,7 +66,7 @@ export default function Devices () {
   useEffect(()=>{
     const arr = []
     allDevices.map(obj => {
-      if(obj.status === "receiving"){
+      if(obj.status === "receiving" && obj.peerId !== ""){
         arr.push(obj)
       }
     })

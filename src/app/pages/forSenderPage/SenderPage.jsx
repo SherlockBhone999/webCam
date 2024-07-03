@@ -23,6 +23,7 @@ const pageTransition2 = {
 
 function App () {
   const navigate = useNavigate()
+  const { deviceInfo } = useContext(Context)
   return (
     <AnimatePresence>
         <motion.div className="w-full h-full"
@@ -42,15 +43,21 @@ function App () {
               </div>
               
               <div className="h-1/5 w-full bg-gray-400 flex justify-center items-center">
-                <p className="mr-1"> camera streaming    </p>
-                <ReactTyped
-                  strings={[" ",' . ', " . . ", ' . . . ']}
-                  typeSpeed={40}
-                  backSpeed={50}
-                  showCursor={false}
-                  loop
-                />              
+                <div>
+                  <div className="flex">
+                    <p className="mr-1"> camera streaming    </p>
+                    <ReactTyped
+                      strings={[" ",' . ', " . . ", ' . . . ']}
+                      typeSpeed={40}
+                      backSpeed={50}
+                      showCursor={false}
+                      loop
+                    />   
+                  </div>
+                  { deviceInfo.peerId === "" && <p> peer server not connected</p> }
+                </div>
               </div>
+              
               
               <div className="flex-auto bg-gray-300 overflow-scroll p-1">
                 
