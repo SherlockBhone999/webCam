@@ -15,7 +15,7 @@ const Device = ({data}) => {
       callRef.current.close()
       setTimeout(()=>{
         call(data.peerId)
-      },500)
+      },1000)
     }
   },[facingMode])
   
