@@ -15,7 +15,7 @@ const Device = ({data}) => {
       callRef.current.close()
       console.log("call close called after facingMode change")
       setTimeout(()=>{
-        call(data.peerId)
+        send()
         console.log("call start called after facingMode change")
       },1000)
     }

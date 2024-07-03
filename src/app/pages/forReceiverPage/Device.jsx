@@ -17,7 +17,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       });
       
       call.on('close', () => {
-        videoRef.current.srcObject = null;
+        videoRef.current = null;
       })
     });
   },[])
