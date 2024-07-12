@@ -32,7 +32,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   },[])
   
   useEffect(()=>{
-    if(videoRef.current?.srcObject === null && videoRef.current === null){
+    if(videoRef.current?.srcObject === null || videoRef.current === null){
       setIsVideoSourceNull(true)
     }else{
       setIsVideoSourceNull(false)
