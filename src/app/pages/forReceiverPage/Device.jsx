@@ -33,8 +33,11 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
     });
     
     return () => {
-      closeConnection()
-    }
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    
   },[])
   
   
