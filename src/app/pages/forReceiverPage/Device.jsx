@@ -33,8 +33,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
     });
     
     return () => {
-      setIsVideoSourceNull(true)
-      videoRef.current.srcObject = null;
+      closeConnection()
     }
   },[])
   
