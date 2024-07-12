@@ -27,6 +27,7 @@ const pageTransition = {
 const Container = () => {
   const { deviceInfo, setDeviceInfo } = useContext(Context)
   const navigate = useNavigate()
+  
 
   return (
     <AnimatePresence>
@@ -97,6 +98,7 @@ export default function App () {
         }
       })
     }
+    
   },[location])
   return (
     <div className="w-screen h-screen bg-gray-700 flex flex-col">

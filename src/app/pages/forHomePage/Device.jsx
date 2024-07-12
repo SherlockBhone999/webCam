@@ -13,7 +13,7 @@ export default function App ({data}) {
           <div className="ml-2 w-4 h-4 bg-green-500" />
           }
         </div>
-        <p className="" >status : {data.status || "idle"}</p>
+        <p className="text-sm pl-2" >status : {data.status || "idle"}</p>
       </div>
     </div>
   )

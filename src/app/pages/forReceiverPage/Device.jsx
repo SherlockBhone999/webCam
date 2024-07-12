@@ -15,7 +15,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   const { socket, deviceInfo, setDeviceInfo, peerConnectionRef } = useContext(Context)
   const [ isRecording, setIsRecording ] = useState(false)
   const videoRef = useRef(null)
-  
+  const [isVideoSourceNull, setIsVideoSourceNull ] = useState(true)
   
   useEffect(()=>{
     peerConnectionRef.current?.on("call", (call) => {
@@ -30,6 +30,16 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       })
     });
   },[])
+  
+  useEffect(()=>{
+    if(videoRef.current){
+      const observer = new MutationObserver(()=>{
+        setIsVideoSourceNull(videoRef.current.srcObject === null);
+      });
+      observer.observe(videoRef.current, { attributes : true, attributeFilter : ["srcObject"] });
+      return () => observer.disconnect();
+    }
+  },[videoRef.current])
   
   
   const updateList = () => {
@@ -141,7 +151,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
 
           
         <div className="absolute bottom-0 left-0 w-full">
-          { !videoRef.current?.srcObject && <p className="pb-10 pl-3 text-sm">No camera stream received</p> }
+          { isVideoSourceNull && <p className="pb-10 pl-3 text-sm">No camera stream received</p> }
           <div className="flex justify-between mr-2 ml-2">
             { !isRecording && data.cameraCount > 1 &&
               <button className="bg-blue-400 p-2 rounded shadow"
