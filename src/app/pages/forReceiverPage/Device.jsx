@@ -32,13 +32,11 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   },[])
   
   useEffect(()=>{
-    if(videoRef.current){
-      const observer = new MutationObserver(()=>{
-        setIsVideoSourceNull(videoRef.current.srcObject === null);
-      });
-      observer.observe(videoRef.current, { attributes : true, attributeFilter : ["srcObject"] });
-      return () => observer.disconnect();
-    }
+    const observer = new MutationObserver(()=>{
+      setIsVideoSourceNull(videoRef.current.srcObject === null);
+    });
+    observer.observe(videoRef.current, { attributes : true, attributeFilter : ["srcObject"] });
+    return () => observer.disconnect();
   },[videoRef.current])
   
   
