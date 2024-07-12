@@ -37,7 +37,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach(track => track.stop());
       }
-    
+    }
   },[])
   
   
