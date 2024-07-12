@@ -32,10 +32,10 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   },[])
   
   useEffect(()=>{
-    if(videoRef.current?.srcObject){
-      setIsVideoSourceNull(false)
-    }else{
+    if(videoRef.current?.srcObject === null && videoRef.current === null){
       setIsVideoSourceNull(true)
+    }else{
+      setIsVideoSourceNull(false)
     }
   },[videoRef.current])
   
@@ -149,7 +149,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
 
           
         <div className="absolute bottom-0 left-0 w-full">
-          { isVideoSourceNull && <p className="pb-10 pl-3 text-sm">No camera stream received</p> }
+          { isVideoSourceNull && <p className="pb-10 pl-3 text-sm">No camera stream received {JSON.stringify(isVideoSourceNull)}</p> }
           <div className="flex justify-between mr-2 ml-2">
             { !isRecording && data.cameraCount > 1 &&
               <button className="bg-blue-400 p-2 rounded shadow"
