@@ -52,7 +52,7 @@ export default function App () {
           transition={pageTransition2}
         >
           <div className="flex justify-end">
-            <button className="bg-blue-300 p-3 m-1 rounded"
+            <button className="bg-blue-300 p-3 m-2 rounded"
               onClick={()=>navigate("/")}            >
               <IoMdReturnLeft />
             </button>

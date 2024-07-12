@@ -31,6 +31,11 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         videoRef.current.srcObject = null;
       })
     });
+    
+    return () => {
+      setIsVideoSourceNull(true)
+      videoRef.current.srcObject = null;
+    }
   },[])
   
   

@@ -36,24 +36,24 @@ function App () {
         >
             <div className="w-full h-full flex flex-col relative">
               <div className="absolute top-0 right-0">
-                <button className="bg-gray-200 m-1 p-2 rounded border-2 border-black" 
+                <button className="bg-gray-200 m-1 p-2 rounded border-2 border-black mr-2" 
                   onClick={()=>navigate("/")}
                   >
                   <IoMdReturnLeft />
                 </button>
               </div>
               
-              <div className="h-1/5 w-full flex justify-center items-center bg-zinc-400">
+              <div className="h-1/5 w-full flex justify-center items-center">
                 <div>
                   <div className="flex">
-                    <p className="mr-1 text-black text-lg"> camera streaming    </p>
+                    <p className="mr-1 text-cyan-400 text-lg"> camera streaming    </p>
                     <ReactTyped
                       strings={[" ",' . ', " . . ", ' . . . ']}
                       typeSpeed={40}
                       backSpeed={50}
                       showCursor={false}
                       loop
-                      className="text-black text-lg"
+                      className="text-cyan-400 text-lg"
                     />   
                   </div>
                   { deviceInfo.peerId === "" && <p className="text-black"> peer server not connected</p> }
@@ -61,7 +61,7 @@ function App () {
               </div>
               
               
-              <div className="flex-auto  overflow-scroll p-1 ">
+              <div className="flex-auto  overflow-scroll p-1 pl-3">
                 
                 <Devices />
               </div>
