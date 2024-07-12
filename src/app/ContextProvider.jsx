@@ -2,6 +2,7 @@ import NavigationContainer from "./NavigationContainer"
 import { useState, useEffect, createContext, useRef } from "react"
 import Peer from "peerjs"
 import io  from "socket.io-client"
+import { useIndexedDB } from './pages/forSenderPage/indexedDB/useIndexedDB';
 
 const serverUrl = "https://webcamserver.onrender.com"
 //const serverUrl ="http://localhost:3000"
@@ -32,6 +33,10 @@ export default function App () {
   //camera stream 
   const videoRef = useRef(null);
   const [ facingMode, setFacingMode ] = useState("user")
+  //don't need to do this here, but to prevent re-rendering
+  const [shortName , setShortName] = useState("")
+  const [ refreshItemsCount, setRefreshItemsCount] = useState(false)
+  const { getAllIds, keys } = useIndexedDB()
   
   useEffect(()=>{
     
@@ -70,9 +75,16 @@ export default function App () {
       if(deviceInfo.deviceName !== "" && deviceInfo.roomName !== "" && deviceInfo.socketId !== ""){
         socket.emit("sendDeviceInfoToServer", deviceInfo)
       }
+      
+    const str = generateShortName(deviceInfo.deviceName)
+    if( str !== shortName){
+      setShortName(str)
+    }
   },[deviceInfo])
   
-  
+  useEffect(()=>{
+    getAllIds()
+  },[refreshItemsCount])
   
   const getDeviceInfo = () => {
     const obj = localStorage.getItem("deviceInfo")
@@ -117,6 +129,20 @@ export default function App () {
             setBrowserName("Other");
         }
     }
+    
+    
+  const generateShortName = (str) => {
+    const arr = str.split("")
+    const arr2 = [ ]
+    arr.map((char,index) => {
+      if( char >= "A" && char <="Z"){
+        arr2.push(char)
+      }
+    })
+    const name = arr2.join("")
+    return name
+  }
+  
   
   
   return (
@@ -131,7 +157,9 @@ export default function App () {
       videoRef,
       facingMode,
       setFacingMode,
-      
+      shortName,
+      setRefreshItemsCount,
+      keys,
     }}>
       <NavigationContainer />
     </Context.Provider>

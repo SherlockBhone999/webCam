@@ -2,12 +2,20 @@
 import { useState, useEffect, useContext, useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Context } from '../../ContextProvider'
+import { GrSend } from "react-icons/gr";
+import { FaWindowClose } from "react-icons/fa";
 
 
 const Device = ({data}) => {
   const [isBeingSentTo, setIsBeingSentTo] = useState(false)
-  const { peerConnectionRef, videoRef, facingMode } = useContext(Context)
+  const { peerConnectionRef, videoRef, facingMode, socket } = useContext(Context)
   const callRef = useRef(null)
+  
+  useEffect(()=>{
+    socket.on("closePeerConnection", ()=>{
+      cancel()
+    })
+  },[])
   
   
   useEffect(()=>{
@@ -29,20 +37,25 @@ const Device = ({data}) => {
   const send = () => {
     setIsBeingSentTo(true)
     call(data.peerId)
-    
   }
   
   const cancel = () => {
     setIsBeingSentTo(false)
     callRef.current.close()
   }
+  
+  
   return (
-    <div className="m-1 flex items-center">
-      <p>{data.deviceName}</p>
+    <div className="m-1 flex items-center mb-4">
+      <p className="text-cyan-400">{data.deviceName}</p>
       { !isBeingSentTo ?
-      <button className=" p-2 ml-4 bg-green-500 rounded-lg" onClick={send}>send</button>
+      <button className=" p-2 ml-4 bg-green-400 rounded-lg" onClick={send}>
+        <GrSend />
+      </button>
       :
-      <button className=" p-2 ml-4 bg-red-500 rounded-lg" onClick={cancel}>cancel</button>
+      <button className=" p-2 ml-4 bg-red-500 rounded-lg" onClick={cancel}>
+        <FaWindowClose />
+      </button>
       }
     </div>
   )
@@ -94,11 +107,14 @@ export default function Devices () {
       >
     
       <div>
-        <p className="text-lg font-bold"> receiving devices </p>
+        <p className="text-lg font-bold text-white mt-5"> receiving devices </p>
         <div className="ml-5">
           { receivingDevices.map(obj => 
             <Device data={obj} />
           )}
+          { receivingDevices.length === 0 &&
+            <p className="text-white">None</p>
+          }
         </div>
 
       </div>

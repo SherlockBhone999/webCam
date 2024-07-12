@@ -7,7 +7,7 @@ import { saveFile, getFile , deleteFile, countFiles, getAllKeys, clearAllItems }
 export function useIndexedDB() {
   const [error, setError] = useState(null);
   const [fileContent, setFileContent] = useState(null);
-  const [filesCount, setFilesCount ] = useState(null)
+  const [filesCount, setFilesCount ] = useState(0)
   const [keys, setKeys] = useState([])
 
   const saveToFileDB = useCallback(async (file,id) => {

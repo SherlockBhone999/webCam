@@ -4,6 +4,7 @@ import { useState, useEffect, useContext, useRef } from "react"
 import { Context } from "../../ContextProvider"
 
 
+
 export default function App () {
   const [notiArr, setNotiArr] = useState([""])
   const { socket } = useContext(Context)
@@ -22,12 +23,9 @@ export default function App () {
   
   
   return (
-  <div className="">
-    <div className="w-11/12 bg-blue-200 p-2 rounded-full relative"
+  <div className="w-full h-full relative">
+    <div className="w-11/12 bg-sky-400 p-2 rounded-full flex"
     >
-      <div className="w-full h-full bg-yellow-200 flex"
-    
-      > 
         <ReactTyped
           strings={notiArr}
           typeSpeed={10}
@@ -37,9 +35,8 @@ export default function App () {
           onComplete={handleComplete}
         />          
       <p>_</p>
-      </div>
-      <div className="absolute top-0 right-0 w-1/12 h-full bg-blue-400" />
     </div>
+    <div className="absolute top-0 right-0 w-3/12 h-full bg-sky-400" />
   </div>
   )
 }

@@ -5,6 +5,13 @@ import { useIndexedDB } from './indexedDB/useIndexedDB';
 
 import { format } from 'date-fns';
 
+import { IoCameraReverse } from "react-icons/io5";
+import { MdCamera } from "react-icons/md";
+import { BsFillRecordCircleFill } from "react-icons/bs";
+import { FaRegStopCircle } from "react-icons/fa";
+import { MdHideImage } from "react-icons/md";
+import { MdImage } from "react-icons/md";
+
 
 
 
@@ -15,7 +22,7 @@ const Camera = () => {
   const canvasRef = useRef(null);
   const [ itemToDownload, setItemToDownload ] = useState({ type : "", blob : null })
   const mediaRecorderRef = useRef(null)
-  const { socket, setDeviceInfo , browserName , videoRef, facingMode, setFacingMode } = useContext(Context)
+  const { socket, setDeviceInfo , browserName , videoRef, facingMode, setFacingMode , setRefreshItemsCount } = useContext(Context)
   const [ isHidden, setIsHidden] = useState([])
 
   
@@ -193,6 +200,9 @@ const Camera = () => {
         downloadWindow = window.open(`/download/${id}`, '_blank');
       }, 10)      
     }
+    setTimeout(()=>{
+      setRefreshItemsCount(prevv => !prevv )
+    },20)
   }
   
   const generateFilename = () => {
@@ -215,18 +225,61 @@ const Camera = () => {
 
 
         { !isRecording &&
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={turnCamera2}> turn</button>
+        <div className="">
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={turnCamera2}> 
+            <IoCameraReverse />
+  
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">turn</p>
+          </div>
+        </div>
         }
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={capturePhoto}> capture</button>
+        <div>
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={capturePhoto}>
+            <MdCamera />
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">snap</p>
+          </div>
+        </div>
         { !isRecording ?
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={startRecording2}> record</button>
+        <div>
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={startRecording2}>
+            <BsFillRecordCircleFill />
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">record</p>
+          </div>
+        </div>
         :
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={stopRecording2}> stop</button>
+        <div>
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={stopRecording2}>
+            <FaRegStopCircle />
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">stop</p>
+          </div>
+        </div>
         }
         { !isHidden ?
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={()=>setIsHidden(true)}> hide</button>
+        <div>
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={()=>setIsHidden(true)}>
+            <MdHideImage />
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">hide</p>
+          </div>
+        </div>
         :
-        <button className="bg-blue-400 m-1 p-1 rounded shadow border-2 border-black" onClick={()=>setIsHidden(false)}> unhide </button>
+        <div>
+          <button className="bg-blue-400 m-1 p-2 rounded shadow border-2 border-black" onClick={()=>setIsHidden(false)}> 
+            <MdImage />
+          </button>
+          <div className="flex justify-center">
+            <p className="text-sky-300 text-[10px]">show</p>
+          </div>
+        </div>
         }
         </div>
         

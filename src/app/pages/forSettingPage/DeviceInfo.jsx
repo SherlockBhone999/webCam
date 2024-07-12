@@ -1,8 +1,7 @@
 
 import { useState, useEffect, useRef, useContext } from "react"
 import { Context } from "../../ContextProvider"
-
-
+import { IoIosSave } from "react-icons/io";
 
 export default function App() {
   const { deviceInfo, setDeviceInfo } = useContext(Context)
@@ -38,7 +37,7 @@ export default function App() {
   
   return (
     <div>
-      <div className="bg-green-50 p-2 m-1">
+      <div className="bg-green-50 p-2">
         { fieldValues.deviceName === "" || fieldValues.roomName === "" ?
           <div className="w-full bg-red-500 p-1 mb-0.5">
             <p className="text-white">Names cannot be empty</p>
@@ -48,7 +47,7 @@ export default function App() {
         }
         
         <div className="flex">
-          <p className="p-1">device Name :</p>
+          <p className="p-1 text-sm">Device Name :</p>
           <input className="w-2/5 border-2 border-black roumded ml-2 p-1" 
             value={fieldValues.deviceName}
             onChange={(e)=>{
@@ -63,7 +62,7 @@ export default function App() {
         </div>
         
         <div className="mt-1 flex">
-          <p className="p-1">room Name :</p>
+          <p className="p-1 text-sm">Room Name :</p>
           <input className="w-2/5 border-2 border-black roumded ml-2 p-1" 
             value={fieldValues.roomName}
             onChange={(e)=>{
@@ -78,9 +77,11 @@ export default function App() {
         </div>
         
         <div className="flex justify-end">
-          <button className={`${ isChanged ? "bg-blue-400" : "bg-gray-300" } p-2 m-1 rounded`} 
+          <button className={`${ isChanged ? "bg-blue-400" : "bg-gray-400" } p-2 m-1 rounded`} 
             onClick={update}
-          >Set</button>
+          >
+            <IoIosSave />
+          </button>
         </div>
         
       </div>

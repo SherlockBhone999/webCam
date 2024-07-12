@@ -6,6 +6,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useState , useContext } from 'react';
 import { Context } from "../../ContextProvider"
 
+import { IoMdReturnLeft } from "react-icons/io";
+
 
 const pageVariants2 = {
   initial : { opacity : 0, scale : 0.9 },
@@ -47,11 +49,11 @@ export default function App () {
           variants = {pageVariants2}
           transition={pageTransition2}
         >
-          <div className="flex justify-end">
-            <button className="bg-blue-400 p-2 m-1 rounded"
+          <div className="flex justify-end bg-green-50">
+            <button className="bg-blue-200 p-2 m-1 rounded border-2 border-black"
               onClick={()=>navigate(-1)}
             >
-              Back
+              <IoMdReturnLeft />
             </button>
           </div>
           

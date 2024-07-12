@@ -51,7 +51,7 @@ export default function Devices(){
   return (
     <AnimatePresence>
       { isActive &&
-        <motion.div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 m-2"
+        <motion.div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 m-2 mt-4"
           initial = "initial"
           animate = "animate"
           exit = "exit"
@@ -59,7 +59,7 @@ export default function Devices(){
           transition={pageTransition}    
         >
           { sendingDevices.length === 0 &&
-            <p>Waiting for video streams...</p>
+            <p className="text-white">Waiting for video streams...</p>
           }
           { sendingDevices.map((obj,index) => 
             <Device

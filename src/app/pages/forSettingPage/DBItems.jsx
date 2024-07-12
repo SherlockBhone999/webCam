@@ -1,15 +1,18 @@
 import { useIndexedDB } from '../forSenderPage/indexedDB/useIndexedDB';
+import { Context } from "../../ContextProvider"
+import { useContext} from "react"
 
-import { useState, useEffect } from "react"
+import { FaFileDownload } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 
-const Item = ({id, setRefreshList}) => {
-  const { getAllIds, deleteItemInDB, keys } = useIndexedDB()
-  
+const Item = ({id}) => {
+  const { getAllIds, deleteItemInDB } = useIndexedDB()
+  const { keys, setRefreshItemsCount} = useContext(Context)
   
   const del = () => {
     deleteItemInDB(id)
-    setRefreshList(prevv => !prevv )
+    setRefreshItemsCount(prevv => !prevv)
   }
   
   const download = () => {
@@ -17,27 +20,28 @@ const Item = ({id, setRefreshList}) => {
   }
   return (
     <div className="flex">
-      <p>{id.slice(0,6)}...</p>
-      <button className="bg-red-600 p-2 m-1" onClick={del} >Delete</button>
-      <button className="bg-green-400 p-2 m-1" onClick={download} >Download</button>
+      <p className="ml-6 p-2 pr-1">{id.slice(0,6)}...</p>
+
+      <button className="bg-green-400 p-2 m-1 rounded" onClick={download} >
+        <FaFileDownload />
+      </button>
+      
+      <button className="bg-red-600 p-2 m-1 rounded" onClick={del} >
+        <MdDelete />
+      </button>
+      
     </div>
   )
 }
 
 export default function App () {
-  const { getAllIds, keys } = useIndexedDB()
-  const [refreshList, setRefreshList] = useState(false)
-  
-  useEffect(()=>{
-    getAllIds()
-  },[refreshList])
+  const { keys } = useContext(Context)
   
   return (
     <div>
       {keys.map(id => 
         <Item 
-          id={id} 
-          setRefreshList={setRefreshList}
+          id={id}
         />
       )}
     </div>

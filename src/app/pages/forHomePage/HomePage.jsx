@@ -1,6 +1,9 @@
 
 import Devices from "./Devices"
-import GroupName from '../../components/GroupName'
+import Navbar from '../../components/Navbar'
+
+import { GrSend } from "react-icons/gr";
+import { MdCallReceived } from "react-icons/md";
 
 
 import { useNavigate, useLocation } from "react-router-dom"
@@ -38,30 +41,39 @@ const Container = () => {
         <div className="w-full h-full flex flex-col justify-between ">
 
           { deviceInfo?.socketId ?
-            <div className=" p-1 flex justify-center ">
-              <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
-                onClick={()=>{
-                  navigate("/sender")
-                }}
-              >
-                <p>send</p>
-              </button>
-                
-              <button className="bg-blue-300 w-20 h-20 rounded mr-1 ml-1"
-                onClick={()=>{
-                  navigate("/receiver")
-                }}
-              >
-                <p >receive</p>
-              </button>
+            <div className=" p-1 flex justify-center items-center">
+              
+              <div className="">
+                <button className="bg-blue-300 rounded mr-1 ml-1 p-4"
+                  onClick={()=>{
+                    navigate("/sender")
+                  }}
+                >
+                  <GrSend className="scale-[200%]"/>
+  
+                </button>
+                <p className="flex justify-center text-sky-200 text-xs"> send </p>
+              </div>
+              
+              <div>
+                <button className="bg-blue-300 rounded mr-1 ml-1 p-4 "
+                  onClick={()=>{
+                    navigate("/receiver")
+                  }}
+                >
+                  <MdCallReceived className="scale-[200%]"/>
+                </button>
+                <p className="flex justify-center text-sky-200 text-xs">receive</p>
+              </div>
             </div>
           :
-          <p className="p-1">cannot connect to server. Please wait 50 seconds or more.</p>
+          <p className="p-1 text-white">cannot connect to server. Please wait 50 seconds or more.</p>
           }
+          <div className="h-[5%]"/>
           <div className="flex-auto">
             <Devices />
           </div>
-        
+          <div className="h-5" />
         
         </div>
       </motion.div>
@@ -86,9 +98,10 @@ export default function App () {
     }
   },[location])
   return (
-    <div className="w-screen h-screen bg-gray-200 flex flex-col">
-      <GroupName /> 
-      <div className="flex-auto">
+    <div className="w-screen h-screen bg-gray-700 flex flex-col">
+      <Navbar /> 
+      <div className="h-[10%]"/>
+      <div className="flex-auto ">
         <Container />
       </div>
     </div>

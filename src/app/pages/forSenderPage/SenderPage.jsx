@@ -1,4 +1,4 @@
-import GroupName from "../../components/GroupName"
+import Navbar from "../../components/Navbar"
 import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useContext } from "react"
@@ -7,6 +7,7 @@ import Devices from "./Devices"
 import { Context } from "../../ContextProvider"
 import Camera from "./Camera"
 
+import { IoMdReturnLeft } from "react-icons/io";
 
 
 const pageVariants2 = {
@@ -26,7 +27,7 @@ function App () {
   const { deviceInfo } = useContext(Context)
   return (
     <AnimatePresence>
-        <motion.div className="w-full h-full"
+        <motion.div className="w-full h-full "
           initial = "initial"
           animate = "animate"
           //exit = "exit"
@@ -35,31 +36,32 @@ function App () {
         >
             <div className="w-full h-full flex flex-col relative">
               <div className="absolute top-0 right-0">
-                <button className="bg-gray-300 m-1 p-2 rounded" 
+                <button className="bg-gray-200 m-1 p-2 rounded border-2 border-black" 
                   onClick={()=>navigate("/")}
                   >
-                  Back
+                  <IoMdReturnLeft />
                 </button>
               </div>
               
-              <div className="h-1/5 w-full bg-gray-400 flex justify-center items-center">
+              <div className="h-1/5 w-full flex justify-center items-center bg-zinc-400">
                 <div>
                   <div className="flex">
-                    <p className="mr-1"> camera streaming    </p>
+                    <p className="mr-1 text-black text-lg"> camera streaming    </p>
                     <ReactTyped
                       strings={[" ",' . ', " . . ", ' . . . ']}
                       typeSpeed={40}
                       backSpeed={50}
                       showCursor={false}
                       loop
+                      className="text-black text-lg"
                     />   
                   </div>
-                  { deviceInfo.peerId === "" && <p> peer server not connected</p> }
+                  { deviceInfo.peerId === "" && <p className="text-black"> peer server not connected</p> }
                 </div>
               </div>
               
               
-              <div className="flex-auto bg-gray-300 overflow-scroll p-1">
+              <div className="flex-auto  overflow-scroll p-1 ">
                 
                 <Devices />
               </div>
@@ -93,8 +95,8 @@ export default function App2 (){
   },[location])
   
   return (
-    <div className="w-screen h-screen flex flex-col">
-      <GroupName />
+    <div className="w-screen h-screen flex flex-col bg-gray-700">
+      <Navbar />
       <div className="flex-auto">
         <App />
       </div>

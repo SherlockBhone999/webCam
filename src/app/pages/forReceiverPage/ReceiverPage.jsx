@@ -1,5 +1,5 @@
 
-import GroupName from "../../components/GroupName"
+import Navbar from "../../components/Navbar"
 import Devices from "./Devices"
 import NotiBox from "./NotiBox"
 
@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useState, useEffect, useContext } from "react"
 import { Context } from "../../ContextProvider"
 
+import { IoMdReturnLeft } from "react-icons/io";
 
 const pageVariants2 = {
   initial : { opacity : 0, scale : 0.9 },
@@ -36,23 +37,25 @@ function App () {
         transition={pageTransition2}
         >
           
-          <div className="flex-auto bg-gray-400">
-            <div className="w-full h-full flex flex-col pb-1">
-              <div className="flex justify-between">
+          <div className="flex-auto">
+            <div className="w-full h-full flex flex-col pb-1 items-center">
+              <div className="flex justify-between mt-10 w-5/6">
                 <div className="flex-auto m-1">
                   <NotiBox />
                 </div>
                 
-                <button className="m-1 p-2 bg-gray-300 rounded"
+                <button className="m-1 p-3 bg-gray-200 rounded"
                   onClick={()=>navigate("/")}                >
-                  Back
+                  <IoMdReturnLeft />
                 </button>
               </div>
               
-              <div className="flex-auto bg-yellow-50 overflow-scroll ml-1 mr-1">
+              <div className="flex-auto overflow-scroll ml-1 mr-1">
                 <Devices />
               
               </div>
+              
+              <div className="h-5" />
               
             </div>
           </div>
@@ -80,8 +83,8 @@ export default function App2 (){
   },[location])
   
   return (
-    <div className="w-screen h-screen flex flex-col">
-      <GroupName />
+    <div className="w-screen h-screen flex flex-col bg-gray-700">
+      <Navbar />
       <div className="flex-auto">
         <App />
       </div>
