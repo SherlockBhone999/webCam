@@ -143,7 +143,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         <div className="absolute bottom-0 left-0 w-full">
           { !videoRef.current?.srcObject && <p className="pb-10 pl-3 text-sm">No camera stream received</p> }
           <div className="flex justify-between mr-2 ml-2">
-            { !isRecording &&
+            { !isRecording && data.cameraCount > 1 &&
               <button className="bg-blue-400 p-2 rounded shadow"
                 onClick={orderTurnCamera}
               > 

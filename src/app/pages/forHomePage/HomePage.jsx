@@ -43,6 +43,7 @@ const Container = () => {
           { deviceInfo?.socketId ?
             <div className=" p-1 flex justify-center items-center">
               
+              { deviceInfo.cameraCount > 0 &&
               <div className="">
                 <button className="bg-blue-300 rounded mr-1 ml-1 p-4"
                   onClick={()=>{
@@ -54,7 +55,7 @@ const Container = () => {
                 </button>
                 <p className="flex justify-center text-sky-200 text-xs"> send </p>
               </div>
-              
+              }
               <div>
                 <button className="bg-blue-300 rounded mr-1 ml-1 p-4 "
                   onClick={()=>{
