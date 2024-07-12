@@ -22,8 +22,12 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       call.answer();
       call.on("stream", function (remoteStream) {
         setIsVideoSourceNull(false)
+        if(remoteStream){
         videoRef.current.srcObject = remoteStream;
         videoRef.current.play();
+        }else{
+          window.location.reload(true)
+        }
       });
       
       call.on('close', () => {

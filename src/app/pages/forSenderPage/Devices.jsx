@@ -25,10 +25,9 @@ const Device = ({data}) => {
   useEffect(()=>{
     if(isBeingSentTo){
       callRef.current.close()
-      console.log("call close called after facingMode change")
       setTimeout(()=>{
         call(data.peerId)
-      },500)
+      },1000)
     }
   },[facingMode])
   
