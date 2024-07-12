@@ -19,7 +19,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   
   useEffect(()=>{
     peerConnectionRef.current?.on("call", (call) => {
-      //call.answer();
+      call.answer();
       call.on("stream", function (remoteStream) {
         setIsVideoSourceNull(false)
         videoRef.current.srcObject = remoteStream;
@@ -29,7 +29,11 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       
       call.on('close', () => {
         setIsVideoSourceNull(true)
-        videoRef.current.srcObject = null;
+        try {
+          videoRef.current.srcObject = null;
+        }catch (error){
+          window.location.reload(true);
+        }
       })
     });
     
