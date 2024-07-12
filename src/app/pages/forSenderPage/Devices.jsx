@@ -41,7 +41,7 @@ const Device = ({data}) => {
   
   const cancel = () => {
     setIsBeingSentTo(false)
-    callRef.current.close()
+    callRef.current?.close()
   }
   
   

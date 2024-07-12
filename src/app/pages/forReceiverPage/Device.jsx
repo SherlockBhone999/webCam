@@ -21,23 +21,18 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
     peerConnectionRef.current?.on("call", (call) => {
       call.answer();
       call.on("stream", function (remoteStream) {
+        setIsVideoSourceNull(false)
         videoRef.current.srcObject = remoteStream;
         videoRef.current.play();
       });
       
       call.on('close', () => {
+        setIsVideoSourceNull(true)
         videoRef.current.srcObject = null;
       })
     });
   },[])
   
-  useEffect(()=>{
-    if(videoRef.current?.srcObject === null || videoRef.current === null){
-      setIsVideoSourceNull(true)
-    }else{
-      setIsVideoSourceNull(false)
-    }
-  },[videoRef.current])
   
   
   const updateList = () => {
