@@ -7,7 +7,7 @@ import { useIndexedDB } from './pages/forSenderPage/indexedDB/useIndexedDB';
 const serverUrl = "https://webcamserver.onrender.com"
 //const serverUrl ="http://localhost:3000"
 const socket = io(serverUrl)
-
+ 
 
 export const Context = createContext()
 
@@ -139,7 +139,10 @@ export default function App () {
         arr2.push(char)
       }
     })
-    const name = arr2.join("")
+    let name = arr2.join("")
+    if(name.length === 0){
+      name = str.charAt(0).toUpperCase();
+    } 
     return name
   }
   

@@ -19,15 +19,12 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   
   useEffect(()=>{
     peerConnectionRef.current?.on("call", (call) => {
-      call.answer();
+      //call.answer();
       call.on("stream", function (remoteStream) {
         setIsVideoSourceNull(false)
-        if(remoteStream){
         videoRef.current.srcObject = remoteStream;
-        videoRef.current.play();
-        }else{
-          window.location.reload(true)
-        }
+        //videoRef.current.play();
+        console.log("camera sent")
       });
       
       call.on('close', () => {
