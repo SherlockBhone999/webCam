@@ -17,7 +17,9 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   const [isVideoSourceNull, setIsVideoSourceNull ] = useState(true)
   const [isCameraSwitching, setIsCameraSwitching ] = useState(false)
   
+ 
   useEffect(()=>{
+    {/*
     peerConnectionRef.current?.on("call", (call) => {
       call.answer();
       call.on("stream", function (remoteStream) {
@@ -39,23 +41,46 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
           tracks.forEach(track => track.stop());
         }
         videoRef.current.srcObject = null; 
-        /*
-        try {
-          videoRef.current.srcObject = null;
-        }catch (error){
-          //to solve cannot set null problem, occured when peer connection is exited without closing, or for some other reasons, i am bad at problem solving, can only walk around it, its bad
-          window.location.reload(true);
-        }
-        */
       })
     });
+    */}
     
+    const handleCall = (call) => {
+      call.answer();
+      call.on('stream', (remoteStream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = remoteStream;
+        }
+        setIsVideoSourceNull(false);
+        setTimeout(() => {
+          setIsCameraSwitching(false);
+        }, 1000);
+      });
+
+      call.on('close', () => {
+        setIsVideoSourceNull(true);
+        if (videoRef.current && videoRef.current.srcObject) {
+          const tracks = videoRef.current.srcObject.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+        if (videoRef.current) {
+          videoRef.current.srcObject = null;
+        }
+      });
+    }
+    
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.on('call', handleCall);
+    }
     
     socket.on("showLoading", () => {
       setIsCameraSwitching(true)
     })
     
     return () => {
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.off('call', handleCall);
+      }
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach(track => track.stop());
