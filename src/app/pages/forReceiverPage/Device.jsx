@@ -27,7 +27,8 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         setIsVideoSourceNull(false)
         setTimeout(()=>{
           setIsCameraSwitching(false)
-        },500)
+        },1000)
+
 
       });
       
@@ -36,7 +37,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         try {
           videoRef.current.srcObject = null;
         }catch (error){
-          //to solve cannot set null problem, occured when peer connection is exited without closing, or for some other reason, i am bad at problem solving but i think i have a talend to walk around it
+          //to solve cannot set null problem, occured when peer connection is exited without closing, or for some other reasons, i am bad at problem solving, can only walk around it, its bad
           window.location.reload(true);
         }
       })
@@ -156,9 +157,9 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         </div>
         
 
-        <div className="aspect-[9/16] relative">
+        <div className="w-[300px] h-[400px] relative">
 
-          { isVideoSourceNull && !isCameraSwitching && 
+          { isVideoSourceNull &&
             <p className="pt-10 pl-3 text-sm absolute">No camera stream received</p>
           }
           { isCameraSwitching &&
@@ -169,7 +170,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
             </div>
           }
           
-          <div className="w-full h-full">
+          <div className="w-full h-full absolute top-0 left-0 object-contain">
             <video ref={videoRef} autoPlay muted style={{ width: '100%' }} className=""/>
           </div>
           

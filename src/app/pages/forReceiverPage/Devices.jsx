@@ -18,7 +18,7 @@ const pageTransition = {
 
 
 export default function Devices(){
-  const { allDevices } = useContext(Context)
+  const { allDevices, deviceInfo } = useContext(Context)
   const [ sendingDevices, setSendingDevices ] = useState([])
   const [ isActive, setIsActive] = useState(true)
   const [doAnimation, setDoAnimation] = useState(false)
@@ -58,9 +58,9 @@ export default function Devices(){
           variants = {pageVariants}
           transition={pageTransition}    
         >
-          {/* sendingDevices.length === 0 &&
-            <p className="text-white">Waiting for video streams...</p>
-          */}
+          { sendingDevices.length === 0 &&
+            <p className="text-white">Waiting for Camera streams...</p>
+          }
           { sendingDevices.map((obj,index) => 
             <Device
               data={obj}
@@ -70,6 +70,15 @@ export default function Devices(){
               setDoAnimation={setDoAnimation}
             />
           )}
+          {/*
+            <Device
+              data={deviceInfo}
+              index={0}
+              sendingDevices={sendingDevices}
+              setSendingDevices={setSendingDevices}
+              setDoAnimation={setDoAnimation}
+            />
+            */}
         </motion.div>
       }
     </AnimatePresence>
