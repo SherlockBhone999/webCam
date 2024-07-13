@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useContext , useRef } from "react"
 import { Context } from "../../ContextProvider"
-
+import loadingGif from "../../../assets/loading.gif"
 
 import { TbStackPush } from "react-icons/tb";
 import { FaWindowClose } from "react-icons/fa";
@@ -16,15 +16,17 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   const [ isRecording, setIsRecording ] = useState(false)
   const videoRef = useRef(null)
   const [isVideoSourceNull, setIsVideoSourceNull ] = useState(true)
+  const [isCameraSwitching, setIsCameraSwitching ] = useState(false)
   
   useEffect(()=>{
     peerConnectionRef.current?.on("call", (call) => {
       call.answer();
       call.on("stream", function (remoteStream) {
-        setIsVideoSourceNull(false)
+
         videoRef.current.srcObject = remoteStream;
         //videoRef.current.play();
-        console.log("camera sent")
+        setIsVideoSourceNull(false)
+        setIsCameraSwitching(false)
       });
       
       call.on('close', () => {
@@ -32,6 +34,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         try {
           videoRef.current.srcObject = null;
         }catch (error){
+          //to solve cannot set null problem, occured when peer connection is exited without closing, or for some other reason, i am bad at problem solving but i think i have a talend to walk around it
           window.location.reload(true);
         }
       })
@@ -116,6 +119,7 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       facingMode : data.facingMode
     }
     socket.emit("orderTurnCamera",sender)
+    setIsCameraSwitching(true)
   }
   
   const closeConnection = () => {
@@ -125,9 +129,9 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   
   return (
     <div className="w-full h-full p-1 bg-zinc-300 border border-2 border-black rounded">
-      <div className="relative" >
+      <div className="w-full h-full" >
         
-        <div className="absolute top-0 w-full flex justify-between">
+        <div className="w-full flex justify-between mb-1">
           <div>
             
             <p className="font-bold">{data.deviceName}</p>
@@ -150,15 +154,27 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         </div>
         
 
-        <div className="p-10 flex justify-center">
-          <video ref={videoRef} autoPlay muted style={{ width: '90%' }}/>
+        <div className="aspect-[9/16] relative">
+          <video ref={videoRef} autoPlay muted style={{ width: '100%' }}/>
+          
+          { isVideoSourceNull && !isCameraSwitching && 
+            <p className="pt-10 pl-3 text-sm">No camera stream received</p>
+          }
+          { isCameraSwitching &&
+            <div className="absolute top-0 left-0 w-full h-full bg-white">
+              <div className="w-full h-full flex justify-center items-center">
+                <img src={loadingGif} className="w-[100px]"/>
+              </div>
+            </div>
+          }
         </div>
+        
 
           
-        <div className="absolute bottom-0 left-0 w-full">
-          { isVideoSourceNull && <p className="pb-10 pl-3 text-sm">No camera stream received {JSON.stringify(isVideoSourceNull)}</p> }
+        <div className="mt-1 w-full">
+
           <div className="flex justify-between mr-2 ml-2">
-            { !isRecording && data.cameraCount > 1 &&
+            { !isRecording && data.cameraCount > 1 && !isCameraSwitching &&
               <button className="bg-blue-400 p-2 rounded shadow"
                 onClick={orderTurnCamera}
               > 

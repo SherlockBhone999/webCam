@@ -79,6 +79,10 @@ export default function App () {
           
           <Line />
           
+          <p className="text-red-600 text-lg pl-2">Sometimes if you exit the Connection without closing properly, sending Camera stream might not work, just try a second time.</p>
+          
+          <Line />
+          
           <div className="flex justify-center mt-2">
             <img src={headCameraImg} className="w-[200px] border-2 border-black rounded"/>
           </div>

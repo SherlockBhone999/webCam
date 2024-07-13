@@ -6,7 +6,11 @@ export default {
     ],
   mode: 'jit',
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        '9/16': '9 / 16',
+      },
+    },
   },
   plugins: [],
 }
