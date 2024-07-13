@@ -34,14 +34,26 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
       
       call.on('close', () => {
         setIsVideoSourceNull(true)
+        if (videoRef.current && videoRef.current.srcObject) {
+          const tracks = videoRef.current.srcObject.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+        videoRef.current = null; 
+        /*
         try {
           videoRef.current.srcObject = null;
         }catch (error){
           //to solve cannot set null problem, occured when peer connection is exited without closing, or for some other reasons, i am bad at problem solving, can only walk around it, its bad
           window.location.reload(true);
         }
+        */
       })
     });
+    
+    
+    socket.on("showLoading", () => {
+      setIsCameraSwitching(true)
+    })
     
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {

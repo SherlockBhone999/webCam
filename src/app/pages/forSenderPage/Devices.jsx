@@ -24,6 +24,8 @@ const Device = ({data}) => {
   
   useEffect(()=>{
     if(isBeingSentTo){
+      const receiverId = data.socketId
+      socket.emit("cameraIsSwitching", receiverId)
       callRef.current.close()
       setTimeout(()=>{
         call(data.peerId)
