@@ -170,8 +170,8 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
             </div>
           }
           
-          <div className="w-full h-full absolute top-0 left-0 object-contain">
-            <video ref={videoRef} autoPlay muted style={{ width: '100%' }} className=""/>
+          <div className="w-full h-full absolute top-0 left-0 object-scale-down">
+            <video ref={videoRef} autoPlay muted style={{ width: '100%'}} className="max-h-[400px]"/>
           </div>
           
         </div>
