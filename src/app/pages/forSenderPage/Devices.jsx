@@ -48,17 +48,21 @@ const Device = ({data}) => {
   
   
   return (
-    <div className="m-1 flex items-center mb-4">
-      <p className="text-cyan-400">{data.deviceName}</p>
-      { !isBeingSentTo ?
-      <button className=" p-2 ml-4 bg-green-400 rounded-lg" onClick={send}>
-        <GrSend />
-      </button>
-      :
-      <button className=" p-2 ml-4 bg-red-500 rounded-lg" onClick={cancel}>
-        <FaWindowClose />
-      </button>
-      }
+    <div>
+    { data.peerId !== "" && data.peerId && 
+      <div className="m-1 flex items-center mb-4">
+        <p className="text-cyan-400">{data.deviceName}</p>
+        { !isBeingSentTo ?
+        <button className=" p-2 ml-4 bg-green-400 rounded-lg" onClick={send}>
+          <GrSend />
+        </button>
+        :
+        <button className=" p-2 ml-4 bg-red-500 rounded-lg" onClick={cancel}>
+          <FaWindowClose />
+        </button>
+        }
+      </div>
+    }
     </div>
   )
 }

@@ -79,7 +79,7 @@ export default function App () {
           
           <Line />
           
-          <p className="text-red-600 text-lg pl-2">Sometimes if you exit the Connection without closing properly, sending Camera stream might not work, just try a second time.</p>
+          <p className="text-red-600 text-lg pl-2">Sometimes if you exit the Connection without closing properly, sending Camera stream might not work, just try a second time or refresh the page.</p>
           
           <Line />
           
