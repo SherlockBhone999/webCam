@@ -4,12 +4,11 @@ import { Context } from "../../ContextProvider"
 import loadingGif from "../../../assets/loading.gif"
 
 import { TbStackPush } from "react-icons/tb";
-import { FaWindowClose } from "react-icons/fa";
 import { IoCameraReverse } from "react-icons/io5";
 import { MdCamera } from "react-icons/md";
 import { BsFillRecordCircleFill } from "react-icons/bs";
 import { FaRegStopCircle } from "react-icons/fa";
-
+import { AiOutlineDisconnect } from "react-icons/ai";
 
 export default function Device ({data,index, sendingDevices, setSendingDevices, setDoAnimation}) {
   const { socket, deviceInfo, setDeviceInfo, peerConnectionRef } = useContext(Context)
@@ -26,7 +25,10 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         videoRef.current.srcObject = remoteStream;
         //videoRef.current.play();
         setIsVideoSourceNull(false)
-        setIsCameraSwitching(false)
+        setTimeout(()=>{
+          setIsCameraSwitching(false)
+        },500)
+
       });
       
       call.on('close', () => {
@@ -148,17 +150,16 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
             <button className="bg-red-600 p-2 rounded"
               onClick={closeConnection}
             >
-              <FaWindowClose />
+              <AiOutlineDisconnect />
             </button>
           </div>
         </div>
         
 
         <div className="aspect-[9/16] relative">
-          <video ref={videoRef} autoPlay muted style={{ width: '100%' }}/>
-          
+
           { isVideoSourceNull && !isCameraSwitching && 
-            <p className="pt-10 pl-3 text-sm">No camera stream received</p>
+            <p className="pt-10 pl-3 text-sm absolute">No camera stream received</p>
           }
           { isCameraSwitching &&
             <div className="absolute top-0 left-0 w-full h-full bg-white">
@@ -167,6 +168,11 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
               </div>
             </div>
           }
+          
+          <div className="w-full h-full">
+            <video ref={videoRef} autoPlay muted style={{ width: '100%' }} className=""/>
+          </div>
+          
         </div>
         
 
