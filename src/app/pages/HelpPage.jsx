@@ -79,13 +79,19 @@ export default function App () {
           
           <Line />
           
-          <p className="text-red-600 text-lg pl-2">Sometimes if you exit the Connection without closing properly, sending Camera stream might not work, just try a second time or refresh the page.</p>
+          <p className="text-red-600 text-lg pl-2">If something went wrong, try refreshing.</p>
           
           <Line />
           
+          <p className="pl-4">I want this</p>
           <div className="flex justify-center mt-2">
             <img src={headCameraImg} className="w-[200px] border-2 border-black rounded"/>
           </div>
+          
+          <Line />
+          <p className="pl-2 text-sm">There is a problem, in case of one device sending and two devices receiving its Camera stream, if one receiver switch the Camera, another receiver will also get switched Camera stream. I have solution for this but now is good enough for my personal use.</p>
+          
+          
         </motion.div>
     </AnimatePresence>
   )

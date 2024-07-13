@@ -2,6 +2,8 @@
 import { useState, useEffect, useContext , useRef } from "react"
 import { Context } from "../../ContextProvider"
 import loadingGif from "../../../assets/loading.gif"
+import waitingImg from "../../../assets/waiting.jpeg"
+
 
 import { TbStackPush } from "react-icons/tb";
 import { IoCameraReverse } from "react-icons/io5";
@@ -19,32 +21,6 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
   
  
   useEffect(()=>{
-    {/*
-    peerConnectionRef.current?.on("call", (call) => {
-      call.answer();
-      call.on("stream", function (remoteStream) {
-
-        videoRef.current.srcObject = remoteStream;
-        //videoRef.current.play();
-        setIsVideoSourceNull(false)
-        setTimeout(()=>{
-          setIsCameraSwitching(false)
-        },1000)
-
-
-      });
-      
-      call.on('close', () => {
-        setIsVideoSourceNull(true)
-        if (videoRef.current && videoRef.current.srcObject) {
-          const tracks = videoRef.current.srcObject.getTracks();
-          tracks.forEach(track => track.stop());
-        }
-        videoRef.current.srcObject = null; 
-      })
-    });
-    */}
-    
     const handleCall = (call) => {
       call.answer();
       call.on('stream', (remoteStream) => {
@@ -197,7 +173,16 @@ export default function Device ({data,index, sendingDevices, setSendingDevices, 
         <div className="w-[300px] h-[400px] relative">
 
           { isVideoSourceNull &&
-            <p className="pt-10 pl-3 text-sm absolute">No camera stream received</p>
+            <div className="w-full h-full rounded flex items-center justify-center relative bg-white">
+              <div className="">
+                <img src={waitingImg} className="w-[100px]"/>
+              </div>
+              <div className="absolute top-[20%] w-full">
+                <div className="w-full flex justify-center">
+                  <p className="text-lg text-stone-600">Waiting ...</p>
+                </div>
+              </div>
+            </div>
           }
           { isCameraSwitching &&
             <div className="absolute top-0 left-0 w-full h-full bg-white">
