@@ -13,8 +13,6 @@ import { MdHideImage } from "react-icons/md";
 import { MdImage } from "react-icons/md";
 
 
-
-
 const Camera = () => {
   const [isRecording, setIsRecording] = useState(false);
   
@@ -86,7 +84,11 @@ const Camera = () => {
     })
   },[facingMode ])
   
-  //
+  useEffect(()=>{
+    if(isFailed){
+      window.location.reload(true)
+    }
+  },[isFailed])
   
 
   //
